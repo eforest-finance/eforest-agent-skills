@@ -1,0 +1,57 @@
+{
+  "name": "@eforest-finance/agent-skills",
+  "version": "0.2.0",
+  "description": "AI Agent Kit for aelf token lifecycle on eForest: buy-seed, create-token, issue-token. Supports CLI, MCP, and SDK.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eforest-finance/eforest-agent-skills.git"
+  },
+  "homepage": "https://github.com/eforest-finance/eforest-agent-skills#readme",
+  "bugs": {
+    "url": "https://github.com/eforest-finance/eforest-agent-skills/issues"
+  },
+  "keywords": [
+    "aelf",
+    "eforest",
+    "token",
+    "agent",
+    "mcp",
+    "ai",
+    "openclaw",
+    "blockchain"
+  ],
+  "main": "index.ts",
+  "types": "index.ts",
+  "bin": {
+    "eforest-setup": "./bin/setup.ts"
+  },
+  "scripts": {
+    "test": "bun test __tests__/",
+    "test:unit": "bun test __tests__/unit/",
+    "test:integration": "bun test __tests__/integration/",
+    "test:e2e": "bun test __tests__/e2e/",
+    "cli": "bun run create_token_skill.ts",
+    "buy-seed": "bun run create_token_skill.ts buy-seed",
+    "create-token": "bun run create_token_skill.ts create-token",
+    "issue-token": "bun run create_token_skill.ts issue-token",
+    "mcp": "bun run src/mcp/server.ts",
+    "setup": "bun run bin/setup.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.1",
+    "aelf-sdk": "^3.2.44",
+    "axios": "^1.7.0",
+    "commander": "^12.1.0",
+    "zod": "^3.24.0"
+  },
+  "files": [
+    "index.ts",
+    "lib/",
+    "src/",
+    "bin/",
+    "create_token_skill.ts",
+    "openclaw.json",
+    ".env.example"
+  ]
+}

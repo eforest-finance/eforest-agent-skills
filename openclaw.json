@@ -1,0 +1,170 @@
+{
+  "skills": [
+    {
+      "name": "aelf-buy-seed",
+      "command": "bun run create_token_skill.ts buy-seed --symbol {{symbol}} --issuer {{issuer}} --env {{env}} {{#if force}}--force {{force}}{{/if}} {{#if privateKey}}--private-key {{privateKey}}{{/if}} {{#if dryRun}}--dry-run{{/if}}",
+      "description": "Purchase a SEED on the aelf MainChain. A SEED is a prerequisite for creating a token on aelf blockchain. IMPORTANT: By default this tool REFUSES to buy and outputs the SEED price. You MUST first run with --dry-run to check the price, then ASK THE USER if they want to proceed, then re-run with --force to confirm. Workflow: (1) dry-run to see price, (2) show price to user and ask for confirmation, (3) run with --force or --force <maxELF> to execute. --force with no value buys unconditionally. --force 2 buys only if price <= 2 ELF. The full buy flow is: query price -> check ELF balance -> approve ELF -> call SymbolRegister.Buy -> parse SEED symbol from tx logs. IMPORTANT: The output includes 'seedSymbol' (e.g. 'SEED-321') which is the real on-chain SEED identifier. You MUST use this seedSymbol value for the subsequent create-token --seed-symbol parameter, NOT the token symbol name. Requires AELF_PRIVATE_KEY env var or --private-key. Output: JSON with {success, transactionId, seedSymbol, data} on success, or '[ERROR] ...' with price info on refusal.",
+      "working_directory": "scripts/skills",
+      "parameters": {
+        "symbol": {
+          "type": "string",
+          "required": true,
+          "description": "The SEED symbol to purchase, e.g. 'SEED-123'"
+        },
+        "issuer": {
+          "type": "string",
+          "required": true,
+          "description": "The aelf address that will become the token issuer"
+        },
+        "force": {
+          "type": "string",
+          "required": false,
+          "description": "Confirm purchase. Pass 'true' to buy unconditionally, or a number (e.g. '2') to set max ELF price. Without --force, the tool refuses to buy and outputs price info for user review."
+        },
+        "env": {
+          "type": "string",
+          "required": false,
+          "default": "mainnet",
+          "description": "Environment: 'mainnet' or 'testnet'"
+        },
+        "privateKey": {
+          "type": "string",
+          "required": false,
+          "description": "aelf wallet private key. Prefer using AELF_PRIVATE_KEY env var instead."
+        },
+        "dryRun": {
+          "type": "boolean",
+          "required": false,
+          "default": false,
+          "description": "If true, only prints the execution plan and SEED price without sending any transaction. ALWAYS dry-run first."
+        }
+      }
+    },
+    {
+      "name": "aelf-create-token",
+      "command": "bun run create_token_skill.ts create-token --symbol {{symbol}} --token-name '{{tokenName}}' --seed-symbol {{seedSymbol}} --total-supply {{totalSupply}} --decimals {{decimals}} {{#if issuer}}--issuer {{issuer}}{{/if}} --issue-chain {{issueChain}} {{#if isBurnable}}--is-burnable{{else}}--no-is-burnable{{/if}} {{#if tokenImage}}--token-image '{{tokenImage}}'{{/if}} --env {{env}} {{#if privateKey}}--private-key {{privateKey}}{{/if}} {{#if dryRun}}--dry-run{{/if}}",
+      "description": "Create a new fungible token (FT) on the aelf blockchain using an owned SEED. The full flow is: (1) Check and approve SEED allowance for the TokenAdapter contract, (2) Call TokenAdapter.CreateToken on MainChain, (3) Query GetTokenInfo for proxyIssuer, (4) Save token metadata to backend, (5) Sync token to the issue chain (with graceful degradation on timeout). IMPORTANT: --seed-symbol must be the SEED-{number} value from buy-seed output (e.g. 'SEED-321'), NOT the token name. --issuer is OPTIONAL and defaults to your wallet address. NOTE: The on-chain issuer will be a proxy account created by TokenAdapter, NOT the address you pass. The output includes 'proxyIssuer' which is needed by issue-token. Cross-chain sync to side chain may take several minutes; if it times out, the output includes a warning but success=true (token was created on MainChain). Requires AELF_PRIVATE_KEY env var or --private-key. Output: JSON with {success, transactionId, proxyIssuer, crossChainSynced, data} on success.",
+      "working_directory": "scripts/skills",
+      "parameters": {
+        "symbol": {
+          "type": "string",
+          "required": true,
+          "description": "Token symbol to create, e.g. 'MYTOKEN'"
+        },
+        "tokenName": {
+          "type": "string",
+          "required": true,
+          "description": "Human-readable token name, e.g. 'My Awesome Token'"
+        },
+        "seedSymbol": {
+          "type": "string",
+          "required": true,
+          "description": "The SEED symbol you own, e.g. 'SEED-xxx'"
+        },
+        "totalSupply": {
+          "type": "string",
+          "required": true,
+          "description": "Maximum total supply as integer, e.g. '1000000'"
+        },
+        "decimals": {
+          "type": "number",
+          "required": true,
+          "description": "Token decimal places (0-18), e.g. 8"
+        },
+        "issuer": {
+          "type": "string",
+          "required": false,
+          "description": "Address to pass to TokenAdapter as issuer. Defaults to your wallet address if omitted. NOTE: The on-chain issuer will be a proxy account created by TokenAdapter, not this address. The actual proxy issuer is returned in the output as 'proxyIssuer'."
+        },
+        "issueChain": {
+          "type": "string",
+          "required": true,
+          "description": "Chain to issue on: 'AELF' (MainChain), 'tDVV' (dAppChain), or 'tDVW'"
+        },
+        "isBurnable": {
+          "type": "boolean",
+          "required": false,
+          "default": true,
+          "description": "Whether the token can be burned. Non-burnable tokens cannot be transferred cross-chain."
+        },
+        "tokenImage": {
+          "type": "string",
+          "required": false,
+          "description": "URL of the token logo image"
+        },
+        "env": {
+          "type": "string",
+          "required": false,
+          "default": "mainnet",
+          "description": "Environment: 'mainnet' or 'testnet'"
+        },
+        "privateKey": {
+          "type": "string",
+          "required": false,
+          "description": "aelf wallet private key. Prefer using AELF_PRIVATE_KEY env var instead."
+        },
+        "dryRun": {
+          "type": "boolean",
+          "required": false,
+          "default": false,
+          "description": "If true, only prints the execution plan without sending any transaction"
+        }
+      }
+    },
+    {
+      "name": "aelf-issue-token",
+      "command": "bun run create_token_skill.ts issue-token --symbol {{symbol}} --amount {{amount}} --to {{to}} --chain {{chain}} {{#if issuer}}--issuer {{issuer}}{{/if}} {{#if memo}}--memo '{{memo}}'{{/if}} --env {{env}} {{#if privateKey}}--private-key {{privateKey}}{{/if}} {{#if dryRun}}--dry-run{{/if}}",
+      "description": "Issue (mint) tokens to a specific address via Proxy ForwardCall. Use this AFTER a token has been created with aelf-create-token. Because TokenAdapter creates a proxy account as the on-chain issuer, this command routes through the Proxy contract's ForwardCall method. The flow is: (1) GetTokenInfo to find proxy issuer, (2) GetProxyAccountByProxyAccountAddress to get hash, (3) Encode IssueInput, (4) ForwardCall via Proxy. --issuer is OPTIONAL: if provided, it should be the 'proxyIssuer' value from create-token output. If omitted, it auto-detects by querying GetTokenInfo. --amount is the number of tokens to issue (will be multiplied by 10^decimals on-chain). --chain must match the issue chain specified during token creation. Output: JSON with {success, transactionId, proxyIssuer, data} on success.",
+      "working_directory": "scripts/skills",
+      "parameters": {
+        "symbol": {
+          "type": "string",
+          "required": true,
+          "description": "Token symbol to issue, e.g. 'MYTOKEN'"
+        },
+        "amount": {
+          "type": "number",
+          "required": true,
+          "description": "Number of tokens to issue (positive integer)"
+        },
+        "to": {
+          "type": "string",
+          "required": true,
+          "description": "Recipient aelf address"
+        },
+        "chain": {
+          "type": "string",
+          "required": true,
+          "description": "Chain where the token was created: 'AELF', 'tDVV', or 'tDVW'"
+        },
+        "issuer": {
+          "type": "string",
+          "required": false,
+          "description": "Proxy issuer address (the 'proxyIssuer' from create-token output). If omitted, auto-detected from GetTokenInfo on the target chain."
+        },
+        "memo": {
+          "type": "string",
+          "required": false,
+          "description": "Optional memo for the issue transaction"
+        },
+        "env": {
+          "type": "string",
+          "required": false,
+          "default": "mainnet",
+          "description": "Environment: 'mainnet' or 'testnet'"
+        },
+        "privateKey": {
+          "type": "string",
+          "required": false,
+          "description": "aelf wallet private key. Prefer using AELF_PRIVATE_KEY env var instead."
+        },
+        "dryRun": {
+          "type": "boolean",
+          "required": false,
+          "default": false,
+          "description": "If true, only prints the execution plan without sending any transaction"
+        }
+      }
+    }
+  ]
+}
