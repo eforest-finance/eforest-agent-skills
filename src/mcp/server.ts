@@ -68,7 +68,8 @@ const server = new McpServer({
 // --- aelf-buy-seed ---
 server.tool(
   'aelf-buy-seed',
-  `Purchase a SEED on aelf MainChain. Returns seedSymbol (e.g. "SEED-321") needed for create-token.
+  `Purchase a SEED on aelf MainChain. Supports both EOA and CA (Portkey) wallets.
+Returns seedSymbol (e.g. "SEED-321") needed for create-token.
 Performs pre-flight availability check, ELF balance check, and Approve before Buy.
 Price safety: requires --force or force param. Use force=2 for max 2 ELF.`,
   {
@@ -116,6 +117,7 @@ Price safety: requires --force or force param. Use force=2 for max 2 ELF.`,
 server.tool(
   'aelf-create-token',
   `Create a new FT token on aelf using an owned SEED (from buy-seed output seedSymbol).
+Supports both EOA and CA (Portkey) wallets.
 Handles SEED Approve, TokenAdapter.CreateToken, backend save, and cross-chain sync.
 Returns proxyIssuer (proxy account address) needed for issue-token.
 Cross-chain sync has graceful degradation: success=true even if sync times out.`,
@@ -168,7 +170,7 @@ Cross-chain sync has graceful degradation: success=true even if sync times out.`
 // --- aelf-issue-token ---
 server.tool(
   'aelf-issue-token',
-  `Issue tokens to an address via Proxy ForwardCall.
+  `Issue tokens to an address via Proxy ForwardCall. Supports both EOA and CA (Portkey) wallets.
 Because TokenAdapter creates a proxy account as on-chain issuer, this routes through ProxyContract.
 Auto-detects proxyIssuer from GetTokenInfo if not provided.
 Steps: GetTokenInfo → GetProxyAccount → encode IssueInput → ForwardCall.`,
