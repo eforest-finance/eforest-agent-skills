@@ -4,22 +4,18 @@
  *
  * Registers core functions as Model Context Protocol (MCP) tools.
  * Each tool maps to a core function with Zod input validation.
+ * Supports both EOA and CA (Portkey) wallets via @portkey/aelf-signer.
  *
  * Usage:
  *   bun run src/mcp/server.ts          # stdio transport (default)
  *   EFOREST_NETWORK=testnet bun run src/mcp/server.ts
  *
- * MCP config example (for AI clients):
- *   {
- *     "mcpServers": {
- *       "eforest-token": {
- *         "command": "bun",
- *         "args": ["run", "src/mcp/server.ts"],
- *         "cwd": "<path-to-skills-dir>",
- *         "env": { "AELF_PRIVATE_KEY": "xxx", "EFOREST_NETWORK": "mainnet" }
- *       }
- *     }
- *   }
+ * MCP config example — EOA mode:
+ *   { "env": { "AELF_PRIVATE_KEY": "xxx", "EFOREST_NETWORK": "mainnet" } }
+ *
+ * MCP config example — CA (Portkey) mode:
+ *   { "env": { "PORTKEY_PRIVATE_KEY": "xxx", "PORTKEY_CA_HASH": "xxx",
+ *              "PORTKEY_CA_ADDRESS": "xxx", "EFOREST_NETWORK": "mainnet" } }
  */
 
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';

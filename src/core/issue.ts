@@ -133,7 +133,6 @@ export async function issueToken(
       multiTokenAddr,
       'GetTokenInfo',
       { symbol: opts.symbol },
-      config.wallet,
     );
     proxyIssuerAddress =
       typeof tokenInfo?.issuer === 'string' ? tokenInfo.issuer : '';
@@ -151,7 +150,6 @@ export async function issueToken(
     proxyAddr,
     'GetProxyAccountByProxyAccountAddress',
     proxyIssuerAddress,
-    config.wallet,
   );
 
   const proxyAccountHash = proxyAccountResult?.proxyAccountHash;
@@ -175,7 +173,7 @@ export async function issueToken(
       methodName: 'Issue',
       args: Buffer.from(encodedArgs).toString('base64'),
     },
-    config.wallet,
+    config.signer,
   );
 
   return {

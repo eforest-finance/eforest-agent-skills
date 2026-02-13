@@ -11,7 +11,7 @@ import { getWallet } from '../../lib/aelf-client';
 import { formatOutput, formatError } from '../../create_token_skill';
 
 const TEST_KEY =
-  'e5d0f4b2c8a1f3d6e9b7c0a2d4f6e8b1c3a5d7f9e1b3c5a7d9f1e3b5c7a9d1';
+  'e5d0f4b2c8a1f3d6e9b7c0a2d4f6e8b1c3a5d7f9e1b3c5a7d9f1e3b5c7a9d1f2';
 
 // ============================================================================
 // formatOutput

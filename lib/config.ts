@@ -16,6 +16,7 @@ import { existsSync, readFileSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
+import { createSignerFromEnv } from '@portkey/aelf-signer';
 import type { CmsConfigItems, ResolvedConfig } from './types';
 import { ENV_PRESETS } from './types';
 import { getWallet } from './aelf-client';
@@ -124,8 +125,11 @@ export async function getNetworkConfig(opts?: {
       '',
   };
 
+  // Unified signer: detects EOA/CA mode from env vars automatically
+  const signer = createSignerFromEnv();
+  // Raw wallet for API auth (fetchAuthToken needs keyPair for signature)
   const wallet = getWallet(o.privateKey);
-  const walletAddress = wallet.address;
+  const walletAddress = signer.address;
 
   return {
     apiUrl,
@@ -133,6 +137,7 @@ export async function getNetworkConfig(opts?: {
     connectUrl,
     rpcUrls,
     contracts: cmsConfig,
+    signer,
     wallet,
     walletAddress,
   };

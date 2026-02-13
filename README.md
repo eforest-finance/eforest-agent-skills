@@ -13,7 +13,7 @@ AI Agent Kit for aelf token lifecycle on [eForest](https://www.eforest.finance).
 ### Prerequisites
 
 - [Bun](https://bun.sh) >= 1.0
-- An aelf wallet private key with ELF balance
+- An aelf wallet private key (EOA) or Portkey CA wallet credentials
 
 ### Install
 
@@ -76,6 +76,8 @@ Then edit the generated config to replace `<YOUR_PRIVATE_KEY>` with your actual 
 
 If you prefer manual configuration, add this to your MCP settings:
 
+**EOA mode** (direct private key signing):
+
 ```json
 {
   "mcpServers": {
@@ -84,6 +86,25 @@ If you prefer manual configuration, add this to your MCP settings:
       "args": ["run", "/path/to/eforest-agent-skills/src/mcp/server.ts"],
       "env": {
         "AELF_PRIVATE_KEY": "your_private_key",
+        "EFOREST_NETWORK": "mainnet"
+      }
+    }
+  }
+}
+```
+
+**CA mode** (Portkey Contract Account):
+
+```json
+{
+  "mcpServers": {
+    "eforest-token": {
+      "command": "bun",
+      "args": ["run", "/path/to/eforest-agent-skills/src/mcp/server.ts"],
+      "env": {
+        "PORTKEY_PRIVATE_KEY": "your_manager_private_key",
+        "PORTKEY_CA_HASH": "your_ca_hash",
+        "PORTKEY_CA_ADDRESS": "your_ca_address",
         "EFOREST_NETWORK": "mainnet"
       }
     }
@@ -176,7 +197,10 @@ bun test:integration  # Integration tests only
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `AELF_PRIVATE_KEY` | aelf wallet private key | (required) |
+| `AELF_PRIVATE_KEY` | aelf wallet private key (EOA mode) | — |
+| `PORTKEY_PRIVATE_KEY` | Portkey Manager private key (CA mode) | — |
+| `PORTKEY_CA_HASH` | Portkey CA hash (CA mode) | — |
+| `PORTKEY_CA_ADDRESS` | Portkey CA address (CA mode) | — |
 | `EFOREST_NETWORK` / `AELF_ENV` | `mainnet` or `testnet` | `mainnet` |
 | `EFOREST_API_URL` / `AELF_API_URL` | Backend API URL | auto |
 | `EFOREST_RPC_URL` / `AELF_RPC_URL` | AELF MainChain RPC | auto |

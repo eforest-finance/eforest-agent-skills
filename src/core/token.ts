@@ -127,7 +127,6 @@ export async function createToken(
       owner: config.walletAddress,
       spender: tokenAdapterAddr,
     },
-    config.wallet,
   );
 
   // Approve if needed
@@ -141,7 +140,7 @@ export async function createToken(
         symbol: opts.seedSymbol,
         amount: '1',
       },
-      config.wallet,
+      config.signer,
     );
   }
 
@@ -151,7 +150,7 @@ export async function createToken(
     tokenAdapterAddr,
     'CreateToken',
     createParams,
-    config.wallet,
+    config.signer,
   );
 
   const createTxId = createResult.TransactionId;
@@ -164,7 +163,6 @@ export async function createToken(
       multiTokenAddr,
       'GetTokenInfo',
       { symbol: opts.symbol },
-      config.wallet,
     );
     proxyIssuer =
       typeof tokenInfo?.issuer === 'string' ? tokenInfo.issuer : '';

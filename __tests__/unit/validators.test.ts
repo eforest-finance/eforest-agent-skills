@@ -75,7 +75,7 @@ describe('getWallet', () => {
 
   test('creates wallet from env var', () => {
     const testKey =
-      'e5d0f4b2c8a1f3d6e9b7c0a2d4f6e8b1c3a5d7f9e1b3c5a7d9f1e3b5c7a9d1';
+      'e5d0f4b2c8a1f3d6e9b7c0a2d4f6e8b1c3a5d7f9e1b3c5a7d9f1e3b5c7a9d1f2';
     process.env.AELF_PRIVATE_KEY = testKey;
     const wallet = getWallet();
     expect(wallet).toBeDefined();
@@ -86,7 +86,7 @@ describe('getWallet', () => {
   test('creates wallet from argument', () => {
     delete process.env.AELF_PRIVATE_KEY;
     const testKey =
-      'e5d0f4b2c8a1f3d6e9b7c0a2d4f6e8b1c3a5d7f9e1b3c5a7d9f1e3b5c7a9d1';
+      'e5d0f4b2c8a1f3d6e9b7c0a2d4f6e8b1c3a5d7f9e1b3c5a7d9f1e3b5c7a9d1f2';
     const wallet = getWallet(testKey);
     expect(wallet).toBeDefined();
     expect(wallet.address).toBeDefined();
@@ -94,7 +94,7 @@ describe('getWallet', () => {
 
   test('env var takes priority over argument', () => {
     const envKey =
-      'e5d0f4b2c8a1f3d6e9b7c0a2d4f6e8b1c3a5d7f9e1b3c5a7d9f1e3b5c7a9d1';
+      'e5d0f4b2c8a1f3d6e9b7c0a2d4f6e8b1c3a5d7f9e1b3c5a7d9f1e3b5c7a9d1f2';
     const argKey =
       'a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2';
     process.env.AELF_PRIVATE_KEY = envKey;

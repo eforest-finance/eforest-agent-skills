@@ -104,7 +104,11 @@ export interface ResolvedConfig {
   connectUrl: string;
   rpcUrls: Record<string, string>;
   contracts: CmsConfigItems;
-  wallet: any; // aelf-sdk wallet instance
+  /** Unified signer — supports both EOA and CA wallets. Use for all contract calls. */
+  signer: import('@portkey/aelf-signer').AelfSigner;
+  /** Raw wallet for API auth (fetchAuthToken). For CA: manager wallet. */
+  wallet: any;
+  /** Identity address: CA address (CA mode) or wallet address (EOA mode). */
   walletAddress: string;
 }
 

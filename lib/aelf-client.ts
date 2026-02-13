@@ -5,6 +5,7 @@
  */
 
 import AElf from 'aelf-sdk';
+import type { AelfSigner } from '@portkey/aelf-signer';
 import { TX_POLL_INTERVAL_MS, TX_POLL_MAX_RETRIES } from './types';
 
 // ============================================================================
@@ -23,14 +24,22 @@ export function getWallet(privateKey?: string): any {
   const key =
     process.env.AELF_PRIVATE_KEY ||
     process.env.EFOREST_PRIVATE_KEY ||
+    process.env.PORTKEY_PRIVATE_KEY ||
     privateKey;
 
   if (!key) {
     throw new Error(
-      'Private key is required. Set AELF_PRIVATE_KEY env var or pass --private-key.',
+      'Private key is required. Set AELF_PRIVATE_KEY (EOA) or PORTKEY_PRIVATE_KEY (CA) env var, or pass --private-key.',
     );
   }
   return AElf.wallet.getWalletByPrivateKey(key);
+}
+
+// Singleton view wallet for read-only calls (no real identity needed)
+let _viewWallet: any = null;
+function getViewWallet(): any {
+  if (!_viewWallet) _viewWallet = AElf.wallet.createNewWallet();
+  return _viewWallet;
 }
 
 // ============================================================================
@@ -105,32 +114,36 @@ export async function getTxResult(
 // Contract Call Helpers
 // ============================================================================
 
+/**
+ * Send a state-changing contract call via AelfSigner.
+ * Supports both EOA (direct signing) and CA (ManagerForwardCall) transparently.
+ */
 export async function callContractSend(
   rpcUrl: string,
   contractAddress: string,
   methodName: string,
   params: any,
-  wallet: any,
+  signer: AelfSigner,
 ): Promise<{ TransactionId: string; txResult: any }> {
-  const contract = await getContractInstance(rpcUrl, contractAddress, wallet);
-  const tx = await contract[methodName](params);
-  const transactionId = tx.TransactionId || tx.transactionId || tx;
-  if (!transactionId || typeof transactionId !== 'string') {
-    throw new Error(
-      `Failed to get TransactionId from ${methodName}. Response: ${JSON.stringify(tx)}`,
-    );
-  }
-  await sleep(TX_POLL_INTERVAL_MS);
-  return getTxResult(rpcUrl, transactionId);
+  const result = await signer.sendContractCall(rpcUrl, contractAddress, methodName, params);
+  return {
+    TransactionId: result.transactionId,
+    txResult: result.txResult,
+  };
 }
 
+/**
+ * Read-only contract call. Wallet parameter is optional — uses an internal
+ * ephemeral wallet if not provided.
+ */
 export async function callContractView(
   rpcUrl: string,
   contractAddress: string,
   methodName: string,
   params: any,
-  wallet: any,
+  wallet?: any,
 ): Promise<any> {
-  const contract = await getContractInstance(rpcUrl, contractAddress, wallet);
+  const w = wallet || getViewWallet();
+  const contract = await getContractInstance(rpcUrl, contractAddress, w);
   return await contract[methodName].call(params);
 }

@@ -40,6 +40,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.1",
+    "@portkey/aelf-signer": "^1.0.0",
     "aelf-sdk": "^3.2.44",
     "axios": "^1.7.0",
     "commander": "^12.1.0",
@@ -53,5 +54,8 @@
     "create_token_skill.ts",
     "openclaw.json",
     ".env.example"
-  ]
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
 }

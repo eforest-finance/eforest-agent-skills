@@ -8,7 +8,7 @@ import { describe, test, expect, beforeEach, afterEach } from 'bun:test';
 import { getNetworkConfig } from '../../lib/config';
 
 const TEST_PRIVATE_KEY =
-  'e5d0f4b2c8a1f3d6e9b7c0a2d4f6e8b1c3a5d7f9e1b3c5a7d9f1e3b5c7a9d1';
+  'e5d0f4b2c8a1f3d6e9b7c0a2d4f6e8b1c3a5d7f9e1b3c5a7d9f1e3b5c7a9d1f2';
 
 describe('getNetworkConfig', () => {
   const envKeys = [
@@ -19,6 +19,10 @@ describe('getNetworkConfig', () => {
     'EFOREST_NETWORK',
     'EFOREST_API_URL',
     'EFOREST_RPC_URL',
+    // Portkey CA env vars — must be cleaned to avoid createSignerFromEnv picking CA mode
+    'PORTKEY_PRIVATE_KEY',
+    'PORTKEY_CA_HASH',
+    'PORTKEY_CA_ADDRESS',
   ];
   const savedEnvVars: Record<string, string | undefined> = {};
 

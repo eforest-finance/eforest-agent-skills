@@ -170,7 +170,6 @@ export async function buySeed(
       multiTokenAddr,
       'GetBalance',
       { symbol: 'ELF', owner: config.walletAddress },
-      config.wallet,
     );
     const balanceELF =
       Number(balance?.balance ?? 0) / 10 ** ELF_DECIMALS;
@@ -193,7 +192,6 @@ export async function buySeed(
         owner: config.walletAddress,
         spender: contractAddr,
       },
-      config.wallet,
     );
     if (Number(allowance?.allowance ?? 0) < priceInSmallUnits) {
       await callContractSend(
@@ -205,7 +203,7 @@ export async function buySeed(
           symbol: 'ELF',
           amount: String(priceInSmallUnits),
         },
-        config.wallet,
+        config.signer,
       );
     }
   }
@@ -216,7 +214,7 @@ export async function buySeed(
     contractAddr,
     'Buy',
     { symbol: params.symbol, issueTo: params.issueTo },
-    config.wallet,
+    config.signer,
   );
 
   const seedSymbol = parseSeedSymbolFromLogs(result.txResult?.Logs);
