@@ -40,7 +40,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.1",
-    "@portkey/aelf-signer": "^1.0.0",
+    "@portkey/aelf-signer": "1.0.1",
     "aelf-sdk": "^3.2.44",
     "axios": "^1.7.0",
     "commander": "^12.1.0",
