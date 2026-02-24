@@ -2,11 +2,103 @@
 
 # eForest Agent Skills
 
-AI Agent Kit for aelf token lifecycle on [eForest](https://www.eforest.finance). Provides CLI, MCP Server, and SDK interfaces for:
+AI Agent Kit for aelf + eForest capabilities, exposed via CLI, MCP Server, and SDK.
 
-- **buy-seed** — Purchase a SEED from the SymbolRegister contract
-- **create-token** — Create a new FT token using an owned SEED (with cross-chain sync)
-- **issue-token** — Issue tokens via Proxy ForwardCall
+## Business Capability Overview
+
+### Symbol-Market Domain
+
+- Check name availability and estimate costs before action
+- Purchase symbol creation entitlement (SEED)
+- Create NFT / FT assets
+- Issue assets to target addresses
+- Provide dry-run preview, risk prompts, and structured failure feedback
+
+### Forest Domain (key NFT capabilities)
+
+- Create NFT collections and items (single or batch)
+- NFT trading workflows: list, buy, offer, deal, cancel
+- NFT asset operations: transfer and price lookup
+- Optional extensions: drop, whitelist, AI, miniapp, profile, discovery, realtime
+
+## What's New (Forest Skillization v1)
+
+1. Expanded from token-only flows to a broader capability set for symbol creation plus NFT operations.
+2. Unified skill input/output style so integrations and collaboration are easier across teams.
+3. Improved failure feedback and maintenance-state handling, reducing disruption to main user flows.
+4. Organized Forest capabilities into P0/P1/P2 tiers for phased rollout and acceptance.
+5. Kept legacy tools available so migration can happen step by step without breaking existing usage.
+
+## Forest Skills (P0 / P1 / P2)
+
+### P0 (Core Trading Loop)
+
+Workflow:
+- `aelf-forest-create-collection`
+- `aelf-forest-create-item`
+- `aelf-forest-batch-create-items`
+- `aelf-forest-list-item`
+- `aelf-forest-buy-now`
+- `aelf-forest-make-offer`
+- `aelf-forest-deal-offer`
+- `aelf-forest-cancel-offer`
+- `aelf-forest-cancel-listing`
+- `aelf-forest-transfer-item`
+- `aelf-forest-get-price-quote`
+
+Method (Contract):
+- `aelf-forest-contract-market`
+- `aelf-forest-contract-multitoken`
+- `aelf-forest-contract-token-adapter`
+- `aelf-forest-contract-proxy`
+
+Method (API):
+- `aelf-forest-api-market`
+- `aelf-forest-api-nft`
+- `aelf-forest-api-collection`
+- `aelf-forest-api-sync`
+- `aelf-forest-api-seed-auction`
+
+### P1 (Growth)
+
+Workflow:
+- `aelf-forest-issue-item`
+- `aelf-forest-place-bid`
+- `aelf-forest-claim-drop`
+- `aelf-forest-query-drop`
+- `aelf-forest-whitelist-read`
+- `aelf-forest-whitelist-manage`
+
+Method (Contract):
+- `aelf-forest-contract-auction`
+- `aelf-forest-contract-drop`
+- `aelf-forest-contract-whitelist`
+
+Method (API):
+- `aelf-forest-api-drop`
+- `aelf-forest-api-whitelist`
+
+### P2 (Extensions)
+
+Workflow:
+- `aelf-forest-ai-generate`
+- `aelf-forest-ai-retry`
+- `aelf-forest-create-platform-nft`
+- `aelf-forest-miniapp-action`
+- `aelf-forest-update-profile`
+- `aelf-forest-query-collections`
+- `aelf-forest-watch-market-signals`
+
+Method (Contract):
+- `aelf-forest-contract-miniapp`
+
+Method (API):
+- `aelf-forest-api-ai`
+- `aelf-forest-api-platform`
+- `aelf-forest-api-miniapp`
+- `aelf-forest-api-user`
+- `aelf-forest-api-system`
+- `aelf-forest-api-realtime`
 
 ## Quick Start
 
@@ -27,10 +119,10 @@ bun install
 
 ```bash
 cp .env.example .env
-# Edit .env and set your AELF_PRIVATE_KEY
+# Edit .env and set wallet credentials
 ```
 
-### CLI Usage
+### CLI Usage (Legacy)
 
 ```bash
 # Check SEED price (dry-run)
@@ -54,7 +146,7 @@ bun run cli issue-token \
 
 ## MCP Server (Claude Desktop / Cursor)
 
-One-command setup for AI platforms:
+One-command setup:
 
 ```bash
 # Claude Desktop
@@ -70,13 +162,11 @@ bun run setup cursor --global
 bun run setup list
 ```
 
-Then edit the generated config to replace `<YOUR_PRIVATE_KEY>` with your actual key.
+The MCP server auto-registers both legacy tools and all `aelf-forest-*` tools from the skill registry.
 
 ### Manual MCP Config
 
-If you prefer manual configuration, add this to your MCP settings:
-
-**EOA mode** (direct private key signing):
+**EOA mode**:
 
 ```json
 {
@@ -93,7 +183,7 @@ If you prefer manual configuration, add this to your MCP settings:
 }
 ```
 
-**CA mode** (Portkey Contract Account):
+**CA mode**:
 
 ```json
 {
@@ -112,6 +202,117 @@ If you prefer manual configuration, add this to your MCP settings:
 }
 ```
 
+## Forest API Route Map (Config-first)
+
+Method API skills use route mapping from environment variables (no hard-coded route switch):
+
+- `EFOREST_FOREST_API_ACTION_MAP_JSON` (preferred)
+- `FOREST_API_ACTION_MAP_JSON` (fallback)
+
+Example:
+
+```json
+{
+  "aelf-forest-api-market": {
+    "fetchTokens": {
+      "method": "GET",
+      "path": "/app/market/tokens",
+      "auth": true
+    }
+  },
+  "aelf-forest-api-sync": {
+    "fetchSyncCollection": {
+      "method": "POST",
+      "path": "/app/nft/sync",
+      "auth": true
+    }
+  }
+}
+```
+
+## SDK Usage
+
+```typescript
+import {
+  getNetworkConfig,
+  dispatchForestSkill,
+  listForestSkills,
+} from '@eforest-finance/agent-skills';
+
+const config = await getNetworkConfig({ env: 'mainnet' });
+
+console.log('registered forest skills:', listForestSkills().length);
+
+const quote = await dispatchForestSkill(
+  'aelf-forest-get-price-quote',
+  {
+    env: 'mainnet',
+    payload: {
+      symbol: 'MY-NFT',
+      include: ['tokenData', 'txFee'],
+    },
+  },
+  { config },
+);
+
+if (!quote.success) {
+  console.error(quote.code, quote.message);
+} else {
+  console.log(quote.data);
+}
+```
+
+## Envelope & Error Contract
+
+Successful response shape:
+
+```json
+{
+  "success": true,
+  "code": "OK",
+  "data": {},
+  "warnings": [],
+  "traceId": "..."
+}
+```
+
+Failure response shape:
+
+```json
+{
+  "success": false,
+  "code": "SERVICE_DISABLED",
+  "message": "...",
+  "maintenance": true,
+  "retryable": false,
+  "traceId": "...",
+  "details": {}
+}
+```
+
+## Service Gating & Graceful Degradation
+
+### Key env vars
+
+- `EFOREST_ENABLED_SERVICES`
+- `EFOREST_DISABLED_SERVICES`
+- `EFOREST_MAINTENANCE_SERVICES`
+- `EFOREST_DISABLE_ALL_SERVICES`
+- `EFOREST_SERVICE_<SERVICE_KEY_IN_UPPERCASE>`
+
+Examples:
+
+```bash
+# Disable AI and miniapp domains
+export EFOREST_DISABLED_SERVICES="forest.ai.*,forest.miniapp.*"
+
+# Put market skills into maintenance mode
+export EFOREST_MAINTENANCE_SERVICES="forest.market.*"
+
+# Disable a specific service key
+export EFOREST_SERVICE_FOREST_MARKET_WORKFLOW=false
+```
+
 ## OpenClaw
 
 ```bash
@@ -122,56 +323,33 @@ bun run setup openclaw
 bun run setup openclaw --config-path /path/to/openclaw.json
 ```
 
-## SDK Usage
-
-```typescript
-import { buySeed, createToken, issueToken } from '@eforest-finance/agent-skills';
-import { getNetworkConfig } from '@eforest-finance/agent-skills';
-
-const config = await getNetworkConfig({ env: 'mainnet', privateKey: '...' });
-
-const seedResult = await buySeed(config, {
-  symbol: 'MYTOKEN',
-  issueTo: config.walletAddress,
-  force: 2,
-});
-
-const tokenResult = await createToken(config, {
-  symbol: 'MYTOKEN',
-  tokenName: 'My Token',
-  seedSymbol: seedResult.seedSymbol!,
-  totalSupply: '100000000',
-  decimals: 8,
-  issuer: config.walletAddress,
-  issueChain: 'tDVV',
-  isBurnable: true,
-  tokenImage: '',
-});
-```
-
 ## Architecture
 
 ```
 eforest-agent-skills/
-├── lib/                  # Infrastructure layer
-│   ├── types.ts          # Interfaces, constants, validators
-│   ├── config.ts         # Network config & .env loader
-│   ├── aelf-client.ts    # aelf-sdk wrapper
-│   └── api-client.ts     # eForest backend API client
+├── lib/
+│   ├── types.ts
+│   ├── config.ts
+│   ├── aelf-client.ts
+│   ├── api-client.ts
+│   ├── forest-envelope.ts
+│   ├── forest-service.ts
+│   ├── forest-skill-registry.ts
+│   ├── forest-schemas.ts
+│   └── forest-validator.ts
 ├── src/
-│   ├── core/             # Pure business logic (no I/O side effects)
-│   │   ├── seed.ts       # buySeed + parseSeedSymbolFromLogs
-│   │   ├── token.ts      # createToken
-│   │   └── issue.ts      # issueToken + encodeIssueInput
+│   ├── core/
+│   │   ├── seed.ts
+│   │   ├── token.ts
+│   │   ├── issue.ts
+│   │   └── forest.ts
 │   └── mcp/
-│       └── server.ts     # MCP Server adapter (Zod validation)
+│       └── server.ts
 ├── bin/
-│   ├── setup.ts          # Setup CLI entry point
-│   └── platforms/        # Claude, Cursor, OpenClaw adapters
-├── create_token_skill.ts # CLI adapter (thin wrapper)
-├── index.ts              # SDK entry (re-exports)
-├── openclaw.json         # OpenClaw tool definitions
-└── __tests__/            # Unit + Integration tests
+├── create_token_skill.ts
+├── index.ts
+├── openclaw.json
+└── __tests__/
 ```
 
 ## Configuration Priority
@@ -183,7 +361,7 @@ Settings are resolved in this order (highest priority first):
 3. `EFOREST_*` / `AELF_*` environment variables
 4. `.env` file
 5. CMS remote config
-6. Code defaults (ENV_PRESETS)
+6. Code defaults (`ENV_PRESETS`)
 
 ## Testing
 
@@ -205,6 +383,12 @@ bun test:integration  # Integration tests only
 | `EFOREST_API_URL` / `AELF_API_URL` | Backend API URL | auto |
 | `EFOREST_RPC_URL` / `AELF_RPC_URL` | AELF MainChain RPC | auto |
 | `EFOREST_RPC_URL_TDVV` | tDVV RPC URL | auto |
+| `EFOREST_RPC_URL_TDVW` | tDVW RPC URL | auto |
+| `EFOREST_ENABLED_SERVICES` | Comma-separated service whitelist patterns | empty (allow all) |
+| `EFOREST_DISABLED_SERVICES` | Comma-separated service disable patterns | empty |
+| `EFOREST_MAINTENANCE_SERVICES` | Comma-separated maintenance patterns | empty |
+| `EFOREST_DISABLE_ALL_SERVICES` | Disable all forest services (`true/false`) | `false` |
+| `EFOREST_FOREST_API_ACTION_MAP_JSON` | Method-API action to route mapping JSON | empty |
 
 ## License
 

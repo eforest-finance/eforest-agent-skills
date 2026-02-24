@@ -2,20 +2,7 @@
 /**
  * @eforest-finance/token-agent-kit — MCP Server Adapter
  *
- * Registers core functions as Model Context Protocol (MCP) tools.
- * Each tool maps to a core function with Zod input validation.
- * Supports both EOA and CA (Portkey) wallets via @portkey/aelf-signer.
- *
- * Usage:
- *   bun run src/mcp/server.ts          # stdio transport (default)
- *   EFOREST_NETWORK=testnet bun run src/mcp/server.ts
- *
- * MCP config example — EOA mode:
- *   { "env": { "AELF_PRIVATE_KEY": "xxx", "EFOREST_NETWORK": "mainnet" } }
- *
- * MCP config example — CA (Portkey) mode:
- *   { "env": { "PORTKEY_PRIVATE_KEY": "xxx", "PORTKEY_CA_HASH": "xxx",
- *              "PORTKEY_CA_ADDRESS": "xxx", "EFOREST_NETWORK": "mainnet" } }
+ * Registers legacy token lifecycle tools and forest skill tools.
  */
 
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
@@ -26,11 +13,13 @@ import { loadEnvFile, getNetworkConfig } from '../../lib/config';
 import { buySeed } from '../core/seed';
 import { createToken } from '../core/token';
 import { issueToken } from '../core/issue';
+import { dispatchForestSkill } from '../core/forest';
 import {
   validateBuySeedParams,
   validateCreateTokenParams,
   validateIssueTokenParams,
 } from '../../lib/types';
+import { listForestSkills } from '../../lib/forest-skill-registry';
 
 // Load env on startup
 loadEnvFile();
@@ -62,7 +51,7 @@ function fail(err: any) {
 
 const server = new McpServer({
   name: 'eforest-token-agent-kit',
-  version: '0.2.0',
+  version: '0.3.0',
 });
 
 // --- aelf-buy-seed ---
@@ -205,6 +194,71 @@ Steps: GetTokenInfo → GetProxyAccount → encode IssueInput → ForwardCall.`,
     }
   },
 );
+
+// ============================================================================
+// Forest tool registration (registry driven)
+// ============================================================================
+
+const forestBaseToolSchema = {
+  env: z.enum(['mainnet', 'testnet']).optional().default('mainnet'),
+  dryRun: z.boolean().optional().default(false),
+  traceId: z.string().optional(),
+  timeoutMs: z.number().int().min(1000).max(180000).optional(),
+
+  payload: z.record(z.any()).optional(),
+  action: z.string().optional(),
+  params: z.record(z.any()).optional(),
+
+  method: z.string().optional(),
+  chain: z.enum(['AELF', 'tDVV', 'tDVW']).optional(),
+  args: z.record(z.any()).optional(),
+
+  channels: z.array(z.string()).optional(),
+  address: z.string().optional(),
+};
+
+function buildForestToolDescription(skill: {
+  name: string;
+  tier: string;
+  kind: string;
+  serviceKey: string;
+  in: string;
+  out: string;
+}): string {
+  return [
+    `Forest skill (${skill.tier}).`,
+    `Kind: ${skill.kind}`,
+    `Service key: ${skill.serviceKey}`,
+    `Input schema: ${skill.in}`,
+    `Output schema: ${skill.out}`,
+    'Use env/dryRun/traceId/timeoutMs envelope fields for standard behavior.',
+  ].join('\n');
+}
+
+for (const skill of listForestSkills()) {
+  server.tool(
+    skill.name,
+    buildForestToolDescription(skill),
+    forestBaseToolSchema,
+    async (params) => {
+      try {
+        const env = params.env || process.env.EFOREST_NETWORK || 'mainnet';
+        const config = await getNetworkConfig({ env });
+        const result = await dispatchForestSkill(
+          skill.name,
+          {
+            ...params,
+            env,
+          },
+          { config },
+        );
+        return ok(result);
+      } catch (err) {
+        return fail(err);
+      }
+    },
+  );
+}
 
 // ============================================================================
 // Start
