@@ -12,6 +12,14 @@
 export { buySeed, parseSeedSymbolFromLogs } from './src/core/seed';
 export { createToken } from './src/core/token';
 export { issueToken, encodeIssueInput } from './src/core/issue';
+export {
+  dispatchForestSkill,
+  type ForestDispatchContext,
+  type ContractInvokeRequest,
+  type ApiInvokeRequest,
+  type ApiRoute,
+  type ContractExecutionMode,
+} from './src/core/forest';
 
 // Config
 export { loadEnvFile, getNetworkConfig, fetchCmsConfig } from './lib/config';
@@ -37,6 +45,50 @@ export {
   synchronizeLoop,
   syncResultExistLoop,
 } from './lib/api-client';
+
+// Forest registry, schema, validator
+export {
+  FOREST_SKILL_BINDINGS,
+  FOREST_SKILLS,
+  getForestSkill,
+  listForestSkills,
+  listForestSkillsByTier,
+  type SkillTier,
+  type SkillKind,
+  type ForestSkillSchemaBinding,
+  type ForestSkillDefinition,
+} from './lib/forest-skill-registry';
+export {
+  FOREST_SCHEMAS,
+  getForestSchema,
+  hasForestSchema,
+  listForestSchemaRefs,
+} from './lib/forest-schemas';
+export {
+  validateForestSchema,
+  type ForestValidationResult,
+  type ForestValidationError,
+} from './lib/forest-validator';
+export {
+  FOREST_SERVICE_KEYS,
+  Config,
+  isPatternMatched,
+  type ServiceState,
+} from './lib/forest-service';
+export {
+  ensureInputEnvelope,
+  buildTraceId,
+  successEnvelope,
+  failureEnvelope,
+  isFailureEnvelope,
+  isSuccessEnvelope,
+  type ForestEnv,
+  type ForestInputEnvelope,
+  type ForestFailureCode,
+  type SuccessEnvelope,
+  type FailureEnvelope,
+  type ForestEnvelope,
+} from './lib/forest-envelope';
 
 // Types
 export type {
