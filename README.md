@@ -315,13 +315,57 @@ export EFOREST_SERVICE_FOREST_MARKET_WORKFLOW=false
 
 ## OpenClaw
 
+### Initialize
+
 ```bash
-# Generate OpenClaw config with absolute paths
+# 1) Regenerate catalog from Forest registry (3 legacy + 45 Forest skills)
+bun run generate:openclaw
+
+# 2) Generate standalone OpenClaw config
 bun run setup openclaw
 
-# Merge into existing config
+# 3) Or merge into an existing OpenClaw config
 bun run setup openclaw --config-path /path/to/openclaw.json
 ```
+
+### Call Modes
+
+- `structured` mode (12 high-frequency NFT skills): use direct parameters (symbol/price/chain/etc.).
+- `inputJson` mode (33 long-tail Forest skills): pass one JSON object string for full input.
+
+**Structured example** (`aelf-forest-list-item`):
+
+```json
+{
+  "symbol": "NFT-1",
+  "quantity": 1,
+  "priceSymbol": "ELF",
+  "priceAmount": 1.2,
+  "durationJson": "{\"hours\":24}",
+  "chain": "AELF",
+  "env": "mainnet"
+}
+```
+
+**inputJson example** (`aelf-forest-api-market`):
+
+```json
+{
+  "inputJson": "{\"action\":\"fetchTokens\",\"params\":{\"chainId\":\"AELF\",\"page\":1}}",
+  "env": "mainnet"
+}
+```
+
+### Common Failure Codes
+
+- `INVALID_PARAMS`: input mismatch with skill schema (missing fields/invalid enum/type).
+- `SERVICE_DISABLED`: service key is disabled by environment switches.
+- `MAINTENANCE`: service is under maintenance or route/config is unavailable.
+
+Quick checks:
+- verify parameters or `inputJson` shape
+- verify `EFOREST_DISABLED_SERVICES` / `EFOREST_MAINTENANCE_SERVICES`
+- verify `EFOREST_FOREST_API_ACTION_MAP_JSON` for method-api routes
 
 ## Architecture
 
@@ -338,6 +382,8 @@ eforest-agent-skills/
 │   ├── forest-schemas.ts
 │   └── forest-validator.ts
 ├── src/
+│   ├── cli/
+│   │   └── forest_skill.ts
 │   ├── core/
 │   │   ├── seed.ts
 │   │   ├── token.ts
@@ -346,6 +392,9 @@ eforest-agent-skills/
 │   └── mcp/
 │       └── server.ts
 ├── bin/
+│   ├── setup.ts
+│   ├── generate-openclaw.ts
+│   └── platforms/
 ├── create_token_skill.ts
 ├── index.ts
 ├── openclaw.json
