@@ -74,7 +74,7 @@ program
   .description(
     'eForest Token Agent Kit — CLI for aelf token lifecycle (buy-seed, create-token, issue-token)',
   )
-  .version('0.2.0');
+  .version('0.4.0');
 
 function addGlobalOptions(cmd: Command): Command {
   return cmd

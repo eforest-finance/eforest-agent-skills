@@ -51,7 +51,7 @@ function fail(err: any) {
 
 const server = new McpServer({
   name: 'eforest-token-agent-kit',
-  version: '0.3.0',
+  version: '0.4.0',
 });
 
 // --- aelf-buy-seed ---

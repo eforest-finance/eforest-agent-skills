@@ -315,13 +315,57 @@ export EFOREST_SERVICE_FOREST_MARKET_WORKFLOW=false
 
 ## OpenClaw
 
+### 初始化
+
 ```bash
-# 生成 OpenClaw 配置（绝对路径）
+# 1) 从 Forest registry 重新生成 catalog（3 个 legacy + 45 个 Forest skills）
+bun run generate:openclaw
+
+# 2) 生成独立 OpenClaw 配置
 bun run setup openclaw
 
-# 合并到已有配置
+# 3) 或合并到已有 OpenClaw 配置
 bun run setup openclaw --config-path /path/to/openclaw.json
 ```
+
+### 调用模式
+
+- `structured` 模式（12 个高频 NFT skills）：直接传业务参数（symbol/price/chain 等）。
+- `inputJson` 模式（33 个长尾 Forest skills）：传一个 JSON 字符串覆盖完整输入。
+
+**Structured 示例**（`aelf-forest-list-item`）：
+
+```json
+{
+  "symbol": "NFT-1",
+  "quantity": 1,
+  "priceSymbol": "ELF",
+  "priceAmount": 1.2,
+  "durationJson": "{\"hours\":24}",
+  "chain": "AELF",
+  "env": "mainnet"
+}
+```
+
+**inputJson 示例**（`aelf-forest-api-market`）：
+
+```json
+{
+  "inputJson": "{\"action\":\"fetchTokens\",\"params\":{\"chainId\":\"AELF\",\"page\":1}}",
+  "env": "mainnet"
+}
+```
+
+### 常见失败码
+
+- `INVALID_PARAMS`：入参与 schema 不匹配（缺字段、enum/type 错误）。
+- `SERVICE_DISABLED`：对应 service key 被环境开关关闭。
+- `MAINTENANCE`：服务处于维护中，或路由/配置不可用。
+
+快速排查：
+- 检查参数或 `inputJson` 结构
+- 检查 `EFOREST_DISABLED_SERVICES` / `EFOREST_MAINTENANCE_SERVICES`
+- 检查 `EFOREST_FOREST_API_ACTION_MAP_JSON` 的 method-api 路由映射
 
 ## 架构
 
@@ -338,6 +382,8 @@ eforest-agent-skills/
 │   ├── forest-schemas.ts
 │   └── forest-validator.ts
 ├── src/
+│   ├── cli/
+│   │   └── forest_skill.ts
 │   ├── core/
 │   │   ├── seed.ts
 │   │   ├── token.ts
@@ -346,6 +392,9 @@ eforest-agent-skills/
 │   └── mcp/
 │       └── server.ts
 ├── bin/
+│   ├── setup.ts
+│   ├── generate-openclaw.ts
+│   └── platforms/
 ├── create_token_skill.ts
 ├── index.ts
 ├── openclaw.json

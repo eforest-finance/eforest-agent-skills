@@ -35,7 +35,7 @@ program
   .description(
     'Configure @eforest-finance/token-agent-kit for various AI platforms',
   )
-  .version('0.2.0');
+  .version('0.4.0');
 
 // ---- Shared options helper ----
 const sharedOpts = (cmd: Command) =>

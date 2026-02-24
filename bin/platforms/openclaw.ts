@@ -6,20 +6,44 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { getPackageRoot, readJsonFile, writeJsonFile, LOG } from './utils';
 
-/** Skill names owned by this package (for uninstall) */
-const EFOREST_SKILL_NAMES = new Set([
+/**
+ * Backward-compatible fallback names if openclaw.json cannot be read.
+ * @deprecated Use dynamic names loaded from openclaw.json.
+ */
+const LEGACY_FALLBACK_SKILL_NAMES = new Set([
   'aelf-buy-seed',
   'aelf-create-token',
   'aelf-issue-token',
 ]);
+
+function getPackageOpenClawSourceFile(): string {
+  const packageRoot = getPackageRoot();
+  return path.join(packageRoot, 'openclaw.json');
+}
+
+function getPackageSkillNames(): Set<string> {
+  const sourceFile = getPackageOpenClawSourceFile();
+  const source = readJsonFile(sourceFile);
+  const skills: any[] = source.skills || [];
+  const dynamicNames = new Set<string>(
+    skills
+      .map((skill) => skill?.name)
+      .filter((name): name is string => typeof name === 'string' && name.length > 0),
+  );
+
+  if (dynamicNames.size > 0) {
+    return dynamicNames;
+  }
+
+  return LEGACY_FALLBACK_SKILL_NAMES;
+}
 
 export function setupOpenClaw(opts: {
   configPath?: string;
   cwd?: string;
   force?: boolean;
 }): boolean {
-  const packageRoot = getPackageRoot();
-  const sourceFile = path.join(packageRoot, 'openclaw.json');
+  const sourceFile = getPackageOpenClawSourceFile();
 
   if (!fs.existsSync(sourceFile)) {
     LOG.error(`openclaw.json not found at ${sourceFile}`);
@@ -35,7 +59,7 @@ export function setupOpenClaw(opts: {
   }
 
   // Resolve working_directory for all skills — use explicit cwd, or package root
-  const resolvedCwd = opts.cwd || packageRoot;
+  const resolvedCwd = opts.cwd || getPackageRoot();
 
   const updatedSkills = skills.map((skill: any) => ({
     ...skill,
@@ -108,9 +132,11 @@ export function uninstallOpenClaw(opts: { configPath?: string }): boolean {
     return false;
   }
 
+  const skillNames = getPackageSkillNames();
+
   const before = existing.skills.length;
   existing.skills = existing.skills.filter(
-    (s: any) => !EFOREST_SKILL_NAMES.has(s.name),
+    (s: any) => !skillNames.has(s.name),
   );
   const removed = before - existing.skills.length;
 
