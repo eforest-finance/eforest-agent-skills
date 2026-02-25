@@ -418,10 +418,25 @@ eforest-agent-skills/
 ## 测试
 
 ```bash
-bun test              # 全量测试
-bun test:unit         # 单元测试
-bun test:integration  # 集成测试
+bun test                 # 全量测试
+bun test:unit            # 单元测试
+bun test:integration     # 集成测试
+bun test:e2e:smoke       # Dry-run smoke e2e（PR gate）
+bun test:e2e:full        # 全量 dry-run e2e
+bun test:e2e             # 等价于 test:e2e:full
 ```
+
+说明：
+- e2e 套件为 dry-run deterministic，不依赖链上写操作。
+- CI 中默认 e2e 不依赖额外 test secrets。
+
+## 分支测试矩阵
+
+| Git Event | Branch/Ref | Suite | Gate Level |
+|---|---|---|---|
+| `pull_request` | `main` | `unit + integration + e2e:smoke` | Required |
+| `push` | `main` | `unit + integration + e2e:full` | Required |
+| `push` | `v*` tag | `publish.yml`（包含 `bun test`） | Release Gate |
 
 ## 环境变量
 
