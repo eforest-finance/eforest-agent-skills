@@ -2,6 +2,9 @@
 
 # eForest Agent Skills
 
+[![Unit Tests](https://github.com/eforest-finance/eforest-agent-skills/actions/workflows/publish.yml/badge.svg)](https://github.com/eforest-finance/eforest-agent-skills/actions/workflows/publish.yml)
+[![Coverage](https://codecov.io/gh/eforest-finance/eforest-agent-skills/graph/badge.svg)](https://codecov.io/gh/eforest-finance/eforest-agent-skills)
+
 AI Agent Kit for aelf + eForest capabilities, exposed via CLI, MCP Server, and SDK.
 
 ## Business Capability Overview
@@ -415,10 +418,25 @@ Settings are resolved in this order (highest priority first):
 ## Testing
 
 ```bash
-bun test              # All tests
-bun test:unit         # Unit tests only
-bun test:integration  # Integration tests only
+bun test                 # All tests
+bun test:unit            # Unit tests only
+bun test:integration     # Integration tests only
+bun test:e2e:smoke       # Dry-run smoke e2e (PR gate)
+bun test:e2e:full        # Full dry-run e2e
+bun test:e2e             # Alias to test:e2e:full
 ```
+
+Notes:
+- e2e suite is dry-run deterministic and does not require on-chain write operations.
+- CI e2e defaults do not depend on external test secrets.
+
+## Branch Test Matrix
+
+| Git Event | Branch/Ref | Suite | Gate Level |
+|---|---|---|---|
+| `pull_request` | `main` | `unit + integration + e2e:smoke` | Required |
+| `push` | `main` | `unit + integration + e2e:full` | Required |
+| `push` | `v*` tag | `publish.yml` (includes `bun test`) | Release Gate |
 
 ## Environment Variables
 

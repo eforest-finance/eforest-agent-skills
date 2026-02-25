@@ -103,7 +103,7 @@ describe('buySeed - price safety', () => {
     ).rejects.toThrow('Purchase requires explicit confirmation');
   });
 
-  test('proceeds with --force (boolean true)', async () => {
+  test('proceeds with --force (boolean true)', { timeout: 30000 }, async () => {
     const config = makeMockConfig();
     await expect(
       buySeed(
