@@ -372,6 +372,8 @@ Quick checks:
 
 ## Architecture
 
+Core forest dispatcher is modularized under `src/core/forest/` (with `src/core/forest.ts` kept as a compatibility facade).
+
 ```
 eforest-agent-skills/
 ├── lib/
@@ -391,7 +393,12 @@ eforest-agent-skills/
 │   │   ├── seed.ts
 │   │   ├── token.ts
 │   │   ├── issue.ts
-│   │   └── forest.ts
+│   │   ├── forest.ts
+│   │   └── forest/
+│   │       ├── index.ts
+│   │       ├── dispatcher.ts
+│   │       ├── executors/
+│   │       └── workflow/
 │   └── mcp/
 │       └── server.ts
 ├── bin/

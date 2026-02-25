@@ -372,6 +372,8 @@ bun run setup openclaw --config-path /path/to/openclaw.json
 
 ## 架构
 
+Core forest dispatcher 已模块化到 `src/core/forest/`（`src/core/forest.ts` 保留为兼容 facade）。
+
 ```
 eforest-agent-skills/
 ├── lib/
@@ -391,7 +393,12 @@ eforest-agent-skills/
 │   │   ├── seed.ts
 │   │   ├── token.ts
 │   │   ├── issue.ts
-│   │   └── forest.ts
+│   │   ├── forest.ts
+│   │   └── forest/
+│   │       ├── index.ts
+│   │       ├── dispatcher.ts
+│   │       ├── executors/
+│   │       └── workflow/
 │   └── mcp/
 │       └── server.ts
 ├── bin/
