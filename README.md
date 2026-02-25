@@ -2,6 +2,9 @@
 
 # eForest Agent Skills
 
+[![Unit Tests](https://github.com/eforest-finance/eforest-agent-skills/actions/workflows/publish.yml/badge.svg)](https://github.com/eforest-finance/eforest-agent-skills/actions/workflows/publish.yml)
+[![Coverage](https://codecov.io/gh/eforest-finance/eforest-agent-skills/graph/badge.svg)](https://codecov.io/gh/eforest-finance/eforest-agent-skills)
+
 AI Agent Kit for aelf + eForest capabilities, exposed via CLI, MCP Server, and SDK.
 
 ## Business Capability Overview
