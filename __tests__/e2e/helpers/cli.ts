@@ -16,7 +16,8 @@ export function runCommand(
   envOverrides: Record<string, string> = {},
 ): CliRunResult {
   const proc = Bun.spawnSync({
-    cmd: ['zsh', '-lc', command],
+    // Use bash for cross-environment compatibility (GitHub ubuntu runner may not have zsh).
+    cmd: ['bash', '-lc', command],
     cwd: REPO_ROOT,
     env: {
       ...process.env,
