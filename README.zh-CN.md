@@ -2,7 +2,7 @@
 
 # eForest Agent Skills
 
-[![Unit Tests](https://github.com/eforest-finance/eforest-agent-skills/actions/workflows/publish.yml/badge.svg)](https://github.com/eforest-finance/eforest-agent-skills/actions/workflows/publish.yml)
+[![Unit Tests](https://github.com/eforest-finance/eforest-agent-skills/actions/workflows/test.yml/badge.svg)](https://github.com/eforest-finance/eforest-agent-skills/actions/workflows/test.yml)
 [![Coverage](https://codecov.io/gh/eforest-finance/eforest-agent-skills/graph/badge.svg)](https://codecov.io/gh/eforest-finance/eforest-agent-skills)
 
 面向 aelf + eForest 的 AI Agent Kit，提供 CLI、MCP Server、SDK 三种接入方式。
