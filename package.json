@@ -46,12 +46,13 @@
     "test:coverage:ci": "COVERAGE_MIN_LINES=85 COVERAGE_MIN_FUNCS=80 bun run test:unit:coverage && bun run coverage:gate",
     "build:openclaw": "bun run bin/generate-openclaw.ts",
     "build:openclaw:check": "bun run bin/generate-openclaw.ts --check",
-    "coverage:badge": "bun run bin/generate-coverage-badge.ts"
+    "coverage:badge": "bun run bin/generate-coverage-badge.ts",
+    "deps:check": "bun run scripts/check-deps-baseline.ts"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.12.1",
+    "@modelcontextprotocol/sdk": "^1.26.0",
     "@portkey/aelf-signer": "1.0.1",
-    "aelf-sdk": "^3.2.44",
+    "aelf-sdk": "^3.5.1-beta.0",
     "ajv": "^8.17.1",
     "axios": "^1.7.0",
     "commander": "^12.1.0",
