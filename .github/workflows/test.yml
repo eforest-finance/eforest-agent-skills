@@ -1,4 +1,4 @@
-name: CI
+name: Test
 
 on:
   pull_request:
@@ -9,7 +9,7 @@ on:
       - main
 
 concurrency:
-  group: ci-${{ github.workflow }}-${{ github.ref }}
+  group: test-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -27,6 +27,8 @@ jobs:
       - run: bun run test:unit
       - run: bun run test:integration
       - run: bun run test:e2e:smoke
+      - run: bun run test:coverage:ci
+      - run: bun run build:openclaw:check
 
   main-regression:
     if: github.event_name == 'push'
@@ -42,3 +44,5 @@ jobs:
       - run: bun run test:unit
       - run: bun run test:integration
       - run: bun run test:e2e:full
+      - run: bun run test:coverage:ci
+      - run: bun run build:openclaw:check

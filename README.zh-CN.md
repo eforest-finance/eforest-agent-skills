@@ -5,38 +5,38 @@
 [![Unit Tests](https://github.com/eforest-finance/eforest-agent-skills/actions/workflows/test.yml/badge.svg)](https://github.com/eforest-finance/eforest-agent-skills/actions/workflows/test.yml)
 [![Coverage](https://codecov.io/gh/eforest-finance/eforest-agent-skills/graph/badge.svg)](https://codecov.io/gh/eforest-finance/eforest-agent-skills)
 
-AI Agent Kit for aelf + eForest capabilities, exposed via CLI, MCP Server, and SDK.
+面向 aelf + eForest 的 AI Agent Kit，提供 CLI、MCP Server、SDK 三种接入方式。
 
-## Business Capability Overview
+## 业务能力概览
 
-### Symbol-Market Domain
+### Symbol-Market 业务域
 
-- Check name availability and estimate costs before action
-- Purchase symbol creation entitlement (SEED)
-- Create NFT / FT assets
-- Issue assets to target addresses
-- Provide dry-run preview, risk prompts, and structured failure feedback
+- 先做名称可用性检查与费用预估
+- 购买创建资格（SEED）
+- 创建 NFT / FT 资产
+- 向目标地址发行资产
+- 支持试运行预览、风险提示与结构化失败反馈
 
-### Forest Domain (key NFT capabilities)
+### Forest 业务域（聚焦常用 NFT 能力）
 
-- Create NFT collections and items (single or batch)
-- NFT trading workflows: list, buy, offer, deal, cancel
-- NFT asset operations: transfer and price lookup
-- Optional extensions: drop, whitelist, AI, miniapp, profile, discovery, realtime
+- NFT 创建：collection 与 item（支持批量）
+- NFT 交易：上架、购买、报价、成交、撤销
+- NFT 资产操作：转账、价格查询
+- 扩展能力（可选）：drop、whitelist、AI、miniapp、profile、discover、realtime
 
-## What's New (Forest Skillization v1)
+## 本次更新（Forest Skillization v1）
 
-1. Expanded from token-only flows to a broader capability set for symbol creation plus NFT operations.
-2. Unified skill input/output style so integrations and collaboration are easier across teams.
-3. Improved failure feedback and maintenance-state handling, reducing disruption to main user flows.
-4. Organized Forest capabilities into P0/P1/P2 tiers for phased rollout and acceptance.
-5. Kept legacy tools available so migration can happen step by step without breaking existing usage.
+1. 能力从 token 流程扩展到“symbol 创建 + 常用 NFT 业务”一体化。
+2. 技能输入输出风格统一，接入和跨团队协作更简单。
+3. 失败反馈与维护中提示更清晰，减少主流程中断风险。
+4. Forest 能力按 P0/P1/P2 分层，便于分阶段上线与验收。
+5. 保留旧工具可用，迁移可逐步进行，不影响现有使用。
 
-## Forest Skills (P0 / P1 / P2)
+## Forest Skills（P0 / P1 / P2）
 
-### P0 (Core Trading Loop)
+### P0（核心交易闭环）
 
-Workflow:
+Workflow：
 - `aelf-forest-create-collection`
 - `aelf-forest-create-item`
 - `aelf-forest-batch-create-items`
@@ -49,22 +49,22 @@ Workflow:
 - `aelf-forest-transfer-item`
 - `aelf-forest-get-price-quote`
 
-Method (Contract):
+Method（Contract）：
 - `aelf-forest-contract-market`
 - `aelf-forest-contract-multitoken`
 - `aelf-forest-contract-token-adapter`
 - `aelf-forest-contract-proxy`
 
-Method (API):
+Method（API）：
 - `aelf-forest-api-market`
 - `aelf-forest-api-nft`
 - `aelf-forest-api-collection`
 - `aelf-forest-api-sync`
 - `aelf-forest-api-seed-auction`
 
-### P1 (Growth)
+### P1（增长能力）
 
-Workflow:
+Workflow：
 - `aelf-forest-issue-item`
 - `aelf-forest-place-bid`
 - `aelf-forest-claim-drop`
@@ -72,18 +72,18 @@ Workflow:
 - `aelf-forest-whitelist-read`
 - `aelf-forest-whitelist-manage`
 
-Method (Contract):
+Method（Contract）：
 - `aelf-forest-contract-auction`
 - `aelf-forest-contract-drop`
 - `aelf-forest-contract-whitelist`
 
-Method (API):
+Method（API）：
 - `aelf-forest-api-drop`
 - `aelf-forest-api-whitelist`
 
-### P2 (Extensions)
+### P2（扩展能力）
 
-Workflow:
+Workflow：
 - `aelf-forest-ai-generate`
 - `aelf-forest-ai-retry`
 - `aelf-forest-create-platform-nft`
@@ -92,10 +92,10 @@ Workflow:
 - `aelf-forest-query-collections`
 - `aelf-forest-watch-market-signals`
 
-Method (Contract):
+Method（Contract）：
 - `aelf-forest-contract-miniapp`
 
-Method (API):
+Method（API）：
 - `aelf-forest-api-ai`
 - `aelf-forest-api-platform`
 - `aelf-forest-api-miniapp`
@@ -103,14 +103,14 @@ Method (API):
 - `aelf-forest-api-system`
 - `aelf-forest-api-realtime`
 
-## Quick Start
+## 快速开始
 
-### Prerequisites
+### 前置条件
 
 - [Bun](https://bun.sh) >= 1.0
-- An aelf wallet private key (EOA) or Portkey CA wallet credentials
+- 可用的 aelf 钱包私钥（EOA）或 Portkey CA 钱包凭据
 
-### Install
+### 安装
 
 ```bash
 git clone https://github.com/eforest-finance/eforest-agent-skills.git
@@ -118,58 +118,58 @@ cd eforest-agent-skills
 bun install
 ```
 
-### Configure
+### 配置
 
 ```bash
 cp .env.example .env
-# Edit .env and set wallet credentials
+# 编辑 .env，填入钱包凭据
 ```
 
-### CLI Usage (Legacy)
+### CLI 使用（Legacy）
 
 ```bash
-# Check SEED price (dry-run)
-bun run cli buy-seed --symbol MYTOKEN --issuer <your-address> --dry-run
+# 查询 SEED 价格（dry-run，不发交易）
+bun run cli buy-seed --symbol MYTOKEN --issuer <你的地址> --dry-run
 
-# Buy SEED (max 2 ELF)
-bun run cli buy-seed --symbol MYTOKEN --issuer <your-address> --force 2
+# 购买 SEED（限价 2 ELF）
+bun run cli buy-seed --symbol MYTOKEN --issuer <你的地址> --force 2
 
-# Create token on tDVV side chain
+# 在 tDVV 侧链创建 Token
 bun run cli create-token \
   --symbol MYTOKEN --token-name "My Token" \
   --seed-symbol SEED-321 \
   --total-supply 100000000 --decimals 8 \
   --issue-chain tDVV
 
-# Issue tokens
+# 发行 Token
 bun run cli issue-token \
   --symbol MYTOKEN --amount 10000000000000000 \
-  --to <recipient-address> --chain tDVV
+  --to <接收地址> --chain tDVV
 ```
 
-## MCP Server (Claude Desktop / Cursor)
+## MCP Server（Claude Desktop / Cursor）
 
-One-command setup:
+一键配置：
 
 ```bash
 # Claude Desktop
 bun run setup claude
 
-# Cursor IDE (project-level)
+# Cursor IDE（项目级）
 bun run setup cursor
 
-# Cursor IDE (global)
+# Cursor IDE（全局）
 bun run setup cursor --global
 
-# Check status
+# 查看配置状态
 bun run setup list
 ```
 
-The MCP server auto-registers both legacy tools and all `aelf-forest-*` tools from the skill registry.
+MCP Server 会自动注册 legacy tools + 全部 `aelf-forest-*` tools（来自 skill registry）。
 
-### Manual MCP Config
+### 手动 MCP 配置
 
-**EOA mode**:
+**EOA 模式**：
 
 ```json
 {
@@ -186,7 +186,7 @@ The MCP server auto-registers both legacy tools and all `aelf-forest-*` tools fr
 }
 ```
 
-**CA mode**:
+**CA 模式**：
 
 ```json
 {
@@ -205,14 +205,14 @@ The MCP server auto-registers both legacy tools and all `aelf-forest-*` tools fr
 }
 ```
 
-## Forest API Route Map (Config-first)
+## Forest API Route Map（配置优先）
 
-Method API skills use route mapping from environment variables (no hard-coded route switch):
+Method API skill 的路由映射通过环境变量配置（不写死路由分支）：
 
-- `EFOREST_FOREST_API_ACTION_MAP_JSON` (preferred)
-- `FOREST_API_ACTION_MAP_JSON` (fallback)
+- `EFOREST_FOREST_API_ACTION_MAP_JSON`（优先）
+- `FOREST_API_ACTION_MAP_JSON`（兜底）
 
-Example:
+示例：
 
 ```json
 {
@@ -233,7 +233,7 @@ Example:
 }
 ```
 
-## SDK Usage
+## SDK 使用
 
 ```typescript
 import {
@@ -265,9 +265,9 @@ if (!quote.success) {
 }
 ```
 
-## Envelope & Error Contract
+## Envelope 与错误契约
 
-Successful response shape:
+成功返回：
 
 ```json
 {
@@ -279,7 +279,7 @@ Successful response shape:
 }
 ```
 
-Failure response shape:
+失败返回：
 
 ```json
 {
@@ -293,9 +293,9 @@ Failure response shape:
 }
 ```
 
-## Service Gating & Graceful Degradation
+## Service Gating 与优雅降级
 
-### Key env vars
+### 关键环境变量
 
 - `EFOREST_ENABLED_SERVICES`
 - `EFOREST_DISABLED_SERVICES`
@@ -303,40 +303,40 @@ Failure response shape:
 - `EFOREST_DISABLE_ALL_SERVICES`
 - `EFOREST_SERVICE_<SERVICE_KEY_IN_UPPERCASE>`
 
-Examples:
+示例：
 
 ```bash
-# Disable AI and miniapp domains
+# 关闭 AI 与 miniapp 域
 export EFOREST_DISABLED_SERVICES="forest.ai.*,forest.miniapp.*"
 
-# Put market skills into maintenance mode
+# market 域进入维护模式
 export EFOREST_MAINTENANCE_SERVICES="forest.market.*"
 
-# Disable a specific service key
+# 关闭某个精确 service key
 export EFOREST_SERVICE_FOREST_MARKET_WORKFLOW=false
 ```
 
 ## OpenClaw
 
-### Initialize
+### 初始化
 
 ```bash
-# 1) Regenerate catalog from Forest registry (3 legacy + 45 Forest skills)
+# 1) 从 Forest registry 重新生成 catalog（3 个 legacy + 45 个 Forest skills）
 bun run generate:openclaw
 
-# 2) Generate standalone OpenClaw config
+# 2) 生成独立 OpenClaw 配置
 bun run setup openclaw
 
-# 3) Or merge into an existing OpenClaw config
+# 3) 或合并到已有 OpenClaw 配置
 bun run setup openclaw --config-path /path/to/openclaw.json
 ```
 
-### Call Modes
+### 调用模式
 
-- `structured` mode (12 high-frequency NFT skills): use direct parameters (symbol/price/chain/etc.).
-- `inputJson` mode (33 long-tail Forest skills): pass one JSON object string for full input.
+- `structured` 模式（12 个高频 NFT skills）：直接传业务参数（symbol/price/chain 等）。
+- `inputJson` 模式（33 个长尾 Forest skills）：传一个 JSON 字符串覆盖完整输入。
 
-**Structured example** (`aelf-forest-list-item`):
+**Structured 示例**（`aelf-forest-list-item`）：
 
 ```json
 {
@@ -350,7 +350,7 @@ bun run setup openclaw --config-path /path/to/openclaw.json
 }
 ```
 
-**inputJson example** (`aelf-forest-api-market`):
+**inputJson 示例**（`aelf-forest-api-market`）：
 
 ```json
 {
@@ -359,20 +359,20 @@ bun run setup openclaw --config-path /path/to/openclaw.json
 }
 ```
 
-### Common Failure Codes
+### 常见失败码
 
-- `INVALID_PARAMS`: input mismatch with skill schema (missing fields/invalid enum/type).
-- `SERVICE_DISABLED`: service key is disabled by environment switches.
-- `MAINTENANCE`: service is under maintenance or route/config is unavailable.
+- `INVALID_PARAMS`：入参与 schema 不匹配（缺字段、enum/type 错误）。
+- `SERVICE_DISABLED`：对应 service key 被环境开关关闭。
+- `MAINTENANCE`：服务处于维护中，或路由/配置不可用。
 
-Quick checks:
-- verify parameters or `inputJson` shape
-- verify `EFOREST_DISABLED_SERVICES` / `EFOREST_MAINTENANCE_SERVICES`
-- verify `EFOREST_FOREST_API_ACTION_MAP_JSON` for method-api routes
+快速排查：
+- 检查参数或 `inputJson` 结构
+- 检查 `EFOREST_DISABLED_SERVICES` / `EFOREST_MAINTENANCE_SERVICES`
+- 检查 `EFOREST_FOREST_API_ACTION_MAP_JSON` 的 method-api 路由映射
 
-## Architecture
+## 架构
 
-Core forest dispatcher is modularized under `src/core/forest/` (with `src/core/forest.ts` kept as a compatibility facade).
+Core forest dispatcher 已模块化到 `src/core/forest/`（`src/core/forest.ts` 保留为兼容 facade）。
 
 ```
 eforest-agent-skills/
@@ -411,59 +411,59 @@ eforest-agent-skills/
 └── __tests__/
 ```
 
-## Configuration Priority
+## 配置优先级
 
-Settings are resolved in this order (highest priority first):
+配置解析顺序（从高到低）：
 
-1. Function params (SDK callers)
-2. CLI args (`--env`, `--rpc-url`)
-3. `EFOREST_*` / `AELF_*` environment variables
-4. `.env` file
-5. CMS remote config
-6. Code defaults (`ENV_PRESETS`)
+1. 函数参数（SDK 调用方）
+2. CLI 参数（`--env`、`--rpc-url`）
+3. `EFOREST_*` / `AELF_*` 环境变量
+4. `.env` 文件
+5. CMS 远程配置
+6. 代码默认值（`ENV_PRESETS`）
 
-## Testing
+## 测试
 
 ```bash
-bun test                 # All tests
-bun test:unit            # Unit tests only
-bun test:integration     # Integration tests only
-bun test:e2e:smoke       # Dry-run smoke e2e (PR gate)
-bun test:e2e:full        # Full dry-run e2e
-bun test:e2e             # Alias to test:e2e:full
+bun test                 # 全量测试
+bun test:unit            # 单元测试
+bun test:integration     # 集成测试
+bun test:e2e:smoke       # Dry-run smoke e2e（PR gate）
+bun test:e2e:full        # 全量 dry-run e2e
+bun test:e2e             # 等价于 test:e2e:full
 ```
 
-Notes:
-- e2e suite is dry-run deterministic and does not require on-chain write operations.
-- CI e2e defaults do not depend on external test secrets.
+说明：
+- e2e 套件为 dry-run deterministic，不依赖链上写操作。
+- CI 中默认 e2e 不依赖额外 test secrets。
 
-## Branch Test Matrix
+## 分支测试矩阵
 
 | Git Event | Branch/Ref | Suite | Gate Level |
 |---|---|---|---|
 | `pull_request` | `main` | `unit + integration + e2e:smoke` | Required |
 | `push` | `main` | `unit + integration + e2e:full` | Required |
-| `push` | `v*` tag | `publish.yml` (includes `bun test`) | Release Gate |
+| `push` | `v*` tag | `publish.yml`（包含 `bun test`） | Release Gate |
 
-## Environment Variables
+## 环境变量
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `AELF_PRIVATE_KEY` | aelf wallet private key (EOA mode) | — |
-| `PORTKEY_PRIVATE_KEY` | Portkey Manager private key (CA mode) | — |
-| `PORTKEY_CA_HASH` | Portkey CA hash (CA mode) | — |
-| `PORTKEY_CA_ADDRESS` | Portkey CA address (CA mode) | — |
-| `EFOREST_NETWORK` / `AELF_ENV` | `mainnet` or `testnet` | `mainnet` |
-| `EFOREST_API_URL` / `AELF_API_URL` | Backend API URL | auto |
-| `EFOREST_RPC_URL` / `AELF_RPC_URL` | AELF MainChain RPC | auto |
-| `EFOREST_RPC_URL_TDVV` | tDVV RPC URL | auto |
-| `EFOREST_RPC_URL_TDVW` | tDVW RPC URL | auto |
-| `EFOREST_ENABLED_SERVICES` | Comma-separated service whitelist patterns | empty (allow all) |
-| `EFOREST_DISABLED_SERVICES` | Comma-separated service disable patterns | empty |
-| `EFOREST_MAINTENANCE_SERVICES` | Comma-separated maintenance patterns | empty |
-| `EFOREST_DISABLE_ALL_SERVICES` | Disable all forest services (`true/false`) | `false` |
-| `EFOREST_FOREST_API_ACTION_MAP_JSON` | Method-API action to route mapping JSON | empty |
+| 变量名 | 说明 | 默认值 |
+|--------|------|--------|
+| `AELF_PRIVATE_KEY` | aelf 钱包私钥（EOA） | — |
+| `PORTKEY_PRIVATE_KEY` | Portkey Manager 私钥（CA） | — |
+| `PORTKEY_CA_HASH` | Portkey CA hash（CA） | — |
+| `PORTKEY_CA_ADDRESS` | Portkey CA 地址（CA） | — |
+| `EFOREST_NETWORK` / `AELF_ENV` | `mainnet` 或 `testnet` | `mainnet` |
+| `EFOREST_API_URL` / `AELF_API_URL` | 后端 API 地址 | 自动 |
+| `EFOREST_RPC_URL` / `AELF_RPC_URL` | AELF 主链 RPC | 自动 |
+| `EFOREST_RPC_URL_TDVV` | tDVV RPC | 自动 |
+| `EFOREST_RPC_URL_TDVW` | tDVW RPC | 自动 |
+| `EFOREST_ENABLED_SERVICES` | service 白名单（逗号分隔 pattern） | 空（默认全开） |
+| `EFOREST_DISABLED_SERVICES` | service 关闭列表（逗号分隔 pattern） | 空 |
+| `EFOREST_MAINTENANCE_SERVICES` | 维护中列表（逗号分隔 pattern） | 空 |
+| `EFOREST_DISABLE_ALL_SERVICES` | 关闭全部 forest service（`true/false`） | `false` |
+| `EFOREST_FOREST_API_ACTION_MAP_JSON` | Method API action 到 route 的 JSON 映射 | 空 |
 
-## License
+## 许可证
 
 [MIT](LICENSE)

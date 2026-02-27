@@ -93,7 +93,7 @@ program
     'Merge into existing OpenClaw config file',
   )
   .option('--cwd <path>', 'Working directory for CLI commands')
-  .option('--force', 'Overwrite existing skills in target config', false)
+  .option('--force', 'Overwrite existing tools in target config', false)
   .action((opts) => {
     console.log('\n Setting up OpenClaw...\n');
     setupOpenClaw({

@@ -1,2264 +1,2480 @@
 {
-  "skills": [
+  "name": "eforest-agent-skills",
+  "description": "eForest OpenClaw tools for symbol-market and forest domain skills.",
+  "tools": [
     {
       "name": "aelf-buy-seed",
-      "command": "bun run create_token_skill.ts buy-seed --symbol '{{symbol}}' --issuer '{{issuer}}' --env {{env}} {{#if force}}--force {{force}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} {{#if dryRun}}--dry-run{{/if}}",
       "description": "Symbol-Market: check and purchase SEED for asset creation entry.",
-      "working_directory": ".",
-      "parameters": {
-        "symbol": {
-          "type": "string",
-          "required": true,
-          "description": "SEED symbol to purchase"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run create_token_skill.ts buy-seed --symbol '{{symbol}}' --issuer '{{issuer}}' --env {{env}} {{#if force}}--force {{force}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} {{#if dryRun}}--dry-run{{/if}}"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string",
+            "description": "SEED symbol to purchase"
+          },
+          "issuer": {
+            "type": "string",
+            "description": "Issuer address"
+          },
+          "force": {
+            "type": "string",
+            "description": "true or max ELF price"
+          },
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          }
         },
-        "issuer": {
-          "type": "string",
-          "required": true,
-          "description": "Issuer address"
-        },
-        "force": {
-          "type": "string",
-          "required": false,
-          "description": "true or max ELF price"
-        },
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
-        },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        }
+        "required": [
+          "symbol",
+          "issuer"
+        ],
+        "additionalProperties": true
       }
     },
     {
       "name": "aelf-create-token",
-      "command": "bun run create_token_skill.ts create-token --symbol '{{symbol}}' --token-name '{{tokenName}}' --seed-symbol '{{seedSymbol}}' --total-supply {{totalSupply}} --decimals {{decimals}} {{#if issuer}}--issuer '{{issuer}}'{{/if}} --issue-chain {{issueChain}} {{#if isBurnable}}--is-burnable{{else}}--no-is-burnable{{/if}} {{#if tokenImage}}--token-image '{{tokenImage}}'{{/if}} --env {{env}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} {{#if dryRun}}--dry-run{{/if}}",
       "description": "Symbol-Market: create FT token with owned seed symbol.",
-      "working_directory": ".",
-      "parameters": {
-        "symbol": {
-          "type": "string",
-          "required": true,
-          "description": "Token symbol"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run create_token_skill.ts create-token --symbol '{{symbol}}' --token-name '{{tokenName}}' --seed-symbol '{{seedSymbol}}' --total-supply {{totalSupply}} --decimals {{decimals}} {{#if issuer}}--issuer '{{issuer}}'{{/if}} --issue-chain {{issueChain}} {{#if isBurnable}}--is-burnable{{else}}--no-is-burnable{{/if}} {{#if tokenImage}}--token-image '{{tokenImage}}'{{/if}} --env {{env}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} {{#if dryRun}}--dry-run{{/if}}"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string",
+            "description": "Token symbol"
+          },
+          "tokenName": {
+            "type": "string",
+            "description": "Token display name"
+          },
+          "seedSymbol": {
+            "type": "string",
+            "description": "Owned seed symbol"
+          },
+          "totalSupply": {
+            "type": "string",
+            "description": "Total supply integer string"
+          },
+          "decimals": {
+            "type": "number",
+            "description": "Token decimals"
+          },
+          "issueChain": {
+            "type": "string",
+            "description": "Issue chain: AELF | tDVV | tDVW"
+          },
+          "isBurnable": {
+            "type": "boolean",
+            "description": "Whether token is burnable",
+            "default": true
+          },
+          "issuer": {
+            "type": "string",
+            "description": "Optional issuer address"
+          },
+          "tokenImage": {
+            "type": "string",
+            "description": "Optional token image URL"
+          },
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          }
         },
-        "tokenName": {
-          "type": "string",
-          "required": true,
-          "description": "Token display name"
-        },
-        "seedSymbol": {
-          "type": "string",
-          "required": true,
-          "description": "Owned seed symbol"
-        },
-        "totalSupply": {
-          "type": "string",
-          "required": true,
-          "description": "Total supply integer string"
-        },
-        "decimals": {
-          "type": "number",
-          "required": true,
-          "description": "Token decimals"
-        },
-        "issueChain": {
-          "type": "string",
-          "required": true,
-          "description": "Issue chain: AELF | tDVV | tDVW"
-        },
-        "isBurnable": {
-          "type": "boolean",
-          "required": false,
-          "default": true,
-          "description": "Whether token is burnable"
-        },
-        "issuer": {
-          "type": "string",
-          "required": false,
-          "description": "Optional issuer address"
-        },
-        "tokenImage": {
-          "type": "string",
-          "required": false,
-          "description": "Optional token image URL"
-        },
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
-        },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        }
+        "required": [
+          "symbol",
+          "tokenName",
+          "seedSymbol",
+          "totalSupply",
+          "decimals",
+          "issueChain"
+        ],
+        "additionalProperties": true
       }
     },
     {
       "name": "aelf-issue-token",
-      "command": "bun run create_token_skill.ts issue-token --symbol '{{symbol}}' --amount {{amount}} --to '{{to}}' --chain {{chain}} {{#if issuer}}--issuer '{{issuer}}'{{/if}} {{#if memo}}--memo '{{memo}}'{{/if}} --env {{env}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} {{#if dryRun}}--dry-run{{/if}}",
       "description": "Symbol-Market: issue token amount to target address.",
-      "working_directory": ".",
-      "parameters": {
-        "symbol": {
-          "type": "string",
-          "required": true,
-          "description": "Token symbol"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run create_token_skill.ts issue-token --symbol '{{symbol}}' --amount {{amount}} --to '{{to}}' --chain {{chain}} {{#if issuer}}--issuer '{{issuer}}'{{/if}} {{#if memo}}--memo '{{memo}}'{{/if}} --env {{env}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} {{#if dryRun}}--dry-run{{/if}}"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string",
+            "description": "Token symbol"
+          },
+          "amount": {
+            "type": "number",
+            "description": "Issue amount"
+          },
+          "to": {
+            "type": "string",
+            "description": "Recipient address"
+          },
+          "chain": {
+            "type": "string",
+            "description": "Chain: AELF | tDVV | tDVW"
+          },
+          "issuer": {
+            "type": "string",
+            "description": "Optional proxy issuer"
+          },
+          "memo": {
+            "type": "string",
+            "description": "Optional memo"
+          },
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          }
         },
-        "amount": {
-          "type": "number",
-          "required": true,
-          "description": "Issue amount"
-        },
-        "to": {
-          "type": "string",
-          "required": true,
-          "description": "Recipient address"
-        },
-        "chain": {
-          "type": "string",
-          "required": true,
-          "description": "Chain: AELF | tDVV | tDVW"
-        },
-        "issuer": {
-          "type": "string",
-          "required": false,
-          "description": "Optional proxy issuer"
-        },
-        "memo": {
-          "type": "string",
-          "required": false,
-          "description": "Optional memo"
-        },
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
-        },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        }
+        "required": [
+          "symbol",
+          "amount",
+          "to",
+          "chain"
+        ],
+        "additionalProperties": true
       }
     },
     {
       "name": "aelf-forest-create-collection",
-      "command": "bun run src/cli/forest_skill.ts run --skill aelf-forest-create-collection --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --field payload.symbol='{{symbol}}' --field payload.tokenName='{{tokenName}}' --field payload.seedSymbol='{{seedSymbol}}' --field payload.issueChainId='{{issueChainId}}' --field payload.owner='{{owner}}' --field payload.issuer='{{issuer}}' --field payload.externalInfo='{{externalInfoJson}}' {{#if inputJson}}--input-json '{{inputJson}}'{{/if}}",
       "description": "Forest skill (structured): aelf-forest-create-collection",
-      "working_directory": ".",
-      "parameters": {
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run src/cli/forest_skill.ts run --skill aelf-forest-create-collection --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --field payload.symbol='{{symbol}}' --field payload.tokenName='{{tokenName}}' --field payload.seedSymbol='{{seedSymbol}}' --field payload.issueChainId='{{issueChainId}}' --field payload.owner='{{owner}}' --field payload.issuer='{{issuer}}' --field payload.externalInfo='{{externalInfoJson}}' {{#if inputJson}}--input-json '{{inputJson}}'{{/if}}"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          },
+          "inputJson": {
+            "type": "string",
+            "description": "Optional JSON object for additional fields; structured fields override conflicting keys"
+          },
+          "symbol": {
+            "type": "string",
+            "description": "Collection symbol"
+          },
+          "tokenName": {
+            "type": "string",
+            "description": "Collection display name"
+          },
+          "seedSymbol": {
+            "type": "string",
+            "description": "Owned seed symbol"
+          },
+          "issueChainId": {
+            "type": "string",
+            "description": "Issue chain: AELF | tDVV | tDVW"
+          },
+          "owner": {
+            "type": "string",
+            "description": "Owner address"
+          },
+          "issuer": {
+            "type": "string",
+            "description": "Issuer address"
+          },
+          "externalInfoJson": {
+            "type": "string",
+            "description": "JSON string for externalInfo object"
+          }
         },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        },
-        "inputJson": {
-          "type": "string",
-          "required": false,
-          "description": "Optional JSON object for additional fields; structured fields override conflicting keys"
-        },
-        "symbol": {
-          "type": "string",
-          "required": true,
-          "description": "Collection symbol"
-        },
-        "tokenName": {
-          "type": "string",
-          "required": true,
-          "description": "Collection display name"
-        },
-        "seedSymbol": {
-          "type": "string",
-          "required": true,
-          "description": "Owned seed symbol"
-        },
-        "issueChainId": {
-          "type": "string",
-          "required": true,
-          "description": "Issue chain: AELF | tDVV | tDVW"
-        },
-        "owner": {
-          "type": "string",
-          "required": true,
-          "description": "Owner address"
-        },
-        "issuer": {
-          "type": "string",
-          "required": true,
-          "description": "Issuer address"
-        },
-        "externalInfoJson": {
-          "type": "string",
-          "required": true,
-          "description": "JSON string for externalInfo object"
-        }
+        "required": [
+          "symbol",
+          "tokenName",
+          "seedSymbol",
+          "issueChainId",
+          "owner",
+          "issuer",
+          "externalInfoJson"
+        ],
+        "additionalProperties": true
       }
     },
     {
       "name": "aelf-forest-create-item",
-      "command": "bun run src/cli/forest_skill.ts run --skill aelf-forest-create-item --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --field payload.symbol='{{symbol}}' --field payload.tokenName='{{tokenName}}' --field payload.owner='{{owner}}' --field payload.issuer='{{issuer}}' --field payload.issueChainId='{{issueChainId}}' --field payload.totalSupply={{totalSupply}} --field payload.externalInfo='{{externalInfoJson}}' {{#if inputJson}}--input-json '{{inputJson}}'{{/if}}",
       "description": "Forest skill (structured): aelf-forest-create-item",
-      "working_directory": ".",
-      "parameters": {
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run src/cli/forest_skill.ts run --skill aelf-forest-create-item --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --field payload.symbol='{{symbol}}' --field payload.tokenName='{{tokenName}}' --field payload.owner='{{owner}}' --field payload.issuer='{{issuer}}' --field payload.issueChainId='{{issueChainId}}' --field payload.totalSupply={{totalSupply}} --field payload.externalInfo='{{externalInfoJson}}' {{#if inputJson}}--input-json '{{inputJson}}'{{/if}}"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          },
+          "inputJson": {
+            "type": "string",
+            "description": "Optional JSON object for additional fields; structured fields override conflicting keys"
+          },
+          "symbol": {
+            "type": "string",
+            "description": "NFT symbol"
+          },
+          "tokenName": {
+            "type": "string",
+            "description": "NFT display name"
+          },
+          "owner": {
+            "type": "string",
+            "description": "Owner address"
+          },
+          "issuer": {
+            "type": "string",
+            "description": "Issuer address"
+          },
+          "issueChainId": {
+            "type": "string",
+            "description": "Issue chain: AELF | tDVV | tDVW"
+          },
+          "totalSupply": {
+            "type": "number",
+            "description": "Total supply"
+          },
+          "externalInfoJson": {
+            "type": "string",
+            "description": "JSON string for externalInfo object"
+          }
         },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        },
-        "inputJson": {
-          "type": "string",
-          "required": false,
-          "description": "Optional JSON object for additional fields; structured fields override conflicting keys"
-        },
-        "symbol": {
-          "type": "string",
-          "required": true,
-          "description": "NFT symbol"
-        },
-        "tokenName": {
-          "type": "string",
-          "required": true,
-          "description": "NFT display name"
-        },
-        "owner": {
-          "type": "string",
-          "required": true,
-          "description": "Owner address"
-        },
-        "issuer": {
-          "type": "string",
-          "required": true,
-          "description": "Issuer address"
-        },
-        "issueChainId": {
-          "type": "string",
-          "required": true,
-          "description": "Issue chain: AELF | tDVV | tDVW"
-        },
-        "totalSupply": {
-          "type": "number",
-          "required": true,
-          "description": "Total supply"
-        },
-        "externalInfoJson": {
-          "type": "string",
-          "required": true,
-          "description": "JSON string for externalInfo object"
-        }
+        "required": [
+          "symbol",
+          "tokenName",
+          "owner",
+          "issuer",
+          "issueChainId",
+          "totalSupply",
+          "externalInfoJson"
+        ],
+        "additionalProperties": true
       }
     },
     {
       "name": "aelf-forest-batch-create-items",
-      "command": "bun run src/cli/forest_skill.ts run --skill aelf-forest-batch-create-items --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --field payload.proxyOwnerAddress='{{proxyOwnerAddress}}' --field payload.proxyIssuerAddress='{{proxyIssuerAddress}}' --field payload.items='{{itemsJson}}' {{#if inputJson}}--input-json '{{inputJson}}'{{/if}}",
       "description": "Forest skill (structured): aelf-forest-batch-create-items",
-      "working_directory": ".",
-      "parameters": {
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run src/cli/forest_skill.ts run --skill aelf-forest-batch-create-items --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --field payload.proxyOwnerAddress='{{proxyOwnerAddress}}' --field payload.proxyIssuerAddress='{{proxyIssuerAddress}}' --field payload.items='{{itemsJson}}' {{#if inputJson}}--input-json '{{inputJson}}'{{/if}}"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          },
+          "inputJson": {
+            "type": "string",
+            "description": "Optional JSON object for additional fields; structured fields override conflicting keys"
+          },
+          "proxyOwnerAddress": {
+            "type": "string",
+            "description": "Proxy owner address"
+          },
+          "proxyIssuerAddress": {
+            "type": "string",
+            "description": "Proxy issuer address"
+          },
+          "itemsJson": {
+            "type": "string",
+            "description": "JSON array string for items"
+          }
         },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        },
-        "inputJson": {
-          "type": "string",
-          "required": false,
-          "description": "Optional JSON object for additional fields; structured fields override conflicting keys"
-        },
-        "proxyOwnerAddress": {
-          "type": "string",
-          "required": true,
-          "description": "Proxy owner address"
-        },
-        "proxyIssuerAddress": {
-          "type": "string",
-          "required": true,
-          "description": "Proxy issuer address"
-        },
-        "itemsJson": {
-          "type": "string",
-          "required": true,
-          "description": "JSON array string for items"
-        }
+        "required": [
+          "proxyOwnerAddress",
+          "proxyIssuerAddress",
+          "itemsJson"
+        ],
+        "additionalProperties": true
       }
     },
     {
       "name": "aelf-forest-list-item",
-      "command": "bun run src/cli/forest_skill.ts run --skill aelf-forest-list-item --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --field payload.symbol='{{symbol}}' --field payload.quantity={{quantity}} --field payload.price.symbol='{{priceSymbol}}' --field payload.price.amount={{priceAmount}} --field payload.duration='{{durationJson}}' --field payload.chain='{{chain}}' {{#if inputJson}}--input-json '{{inputJson}}'{{/if}}",
       "description": "Forest skill (structured): aelf-forest-list-item",
-      "working_directory": ".",
-      "parameters": {
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run src/cli/forest_skill.ts run --skill aelf-forest-list-item --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --field payload.symbol='{{symbol}}' --field payload.quantity={{quantity}} --field payload.price.symbol='{{priceSymbol}}' --field payload.price.amount={{priceAmount}} --field payload.duration='{{durationJson}}' --field payload.chain='{{chain}}' {{#if inputJson}}--input-json '{{inputJson}}'{{/if}}"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          },
+          "inputJson": {
+            "type": "string",
+            "description": "Optional JSON object for additional fields; structured fields override conflicting keys"
+          },
+          "symbol": {
+            "type": "string",
+            "description": "NFT symbol"
+          },
+          "quantity": {
+            "type": "number",
+            "description": "Listing quantity"
+          },
+          "priceSymbol": {
+            "type": "string",
+            "description": "Price token symbol"
+          },
+          "priceAmount": {
+            "type": "number",
+            "description": "Price amount"
+          },
+          "durationJson": {
+            "type": "string",
+            "description": "JSON string for duration"
+          },
+          "chain": {
+            "type": "string",
+            "description": "Chain: AELF | tDVV | tDVW"
+          }
         },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        },
-        "inputJson": {
-          "type": "string",
-          "required": false,
-          "description": "Optional JSON object for additional fields; structured fields override conflicting keys"
-        },
-        "symbol": {
-          "type": "string",
-          "required": true,
-          "description": "NFT symbol"
-        },
-        "quantity": {
-          "type": "number",
-          "required": true,
-          "description": "Listing quantity"
-        },
-        "priceSymbol": {
-          "type": "string",
-          "required": true,
-          "description": "Price token symbol"
-        },
-        "priceAmount": {
-          "type": "number",
-          "required": true,
-          "description": "Price amount"
-        },
-        "durationJson": {
-          "type": "string",
-          "required": true,
-          "description": "JSON string for duration"
-        },
-        "chain": {
-          "type": "string",
-          "required": true,
-          "description": "Chain: AELF | tDVV | tDVW"
-        }
+        "required": [
+          "symbol",
+          "quantity",
+          "priceSymbol",
+          "priceAmount",
+          "durationJson",
+          "chain"
+        ],
+        "additionalProperties": true
       }
     },
     {
       "name": "aelf-forest-buy-now",
-      "command": "bun run src/cli/forest_skill.ts run --skill aelf-forest-buy-now --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --field payload.symbol='{{symbol}}' --field payload.chain='{{chain}}' --field payload.fixPriceList='{{fixPriceListJson}}' {{#if inputJson}}--input-json '{{inputJson}}'{{/if}}",
       "description": "Forest skill (structured): aelf-forest-buy-now",
-      "working_directory": ".",
-      "parameters": {
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run src/cli/forest_skill.ts run --skill aelf-forest-buy-now --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --field payload.symbol='{{symbol}}' --field payload.chain='{{chain}}' --field payload.fixPriceList='{{fixPriceListJson}}' {{#if inputJson}}--input-json '{{inputJson}}'{{/if}}"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          },
+          "inputJson": {
+            "type": "string",
+            "description": "Optional JSON object for additional fields; structured fields override conflicting keys"
+          },
+          "symbol": {
+            "type": "string",
+            "description": "NFT symbol"
+          },
+          "chain": {
+            "type": "string",
+            "description": "Chain: AELF | tDVV | tDVW"
+          },
+          "fixPriceListJson": {
+            "type": "string",
+            "description": "JSON array string for fixPriceList"
+          }
         },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        },
-        "inputJson": {
-          "type": "string",
-          "required": false,
-          "description": "Optional JSON object for additional fields; structured fields override conflicting keys"
-        },
-        "symbol": {
-          "type": "string",
-          "required": true,
-          "description": "NFT symbol"
-        },
-        "chain": {
-          "type": "string",
-          "required": true,
-          "description": "Chain: AELF | tDVV | tDVW"
-        },
-        "fixPriceListJson": {
-          "type": "string",
-          "required": true,
-          "description": "JSON array string for fixPriceList"
-        }
+        "required": [
+          "symbol",
+          "chain",
+          "fixPriceListJson"
+        ],
+        "additionalProperties": true
       }
     },
     {
       "name": "aelf-forest-make-offer",
-      "command": "bun run src/cli/forest_skill.ts run --skill aelf-forest-make-offer --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --field payload.symbol='{{symbol}}' --field payload.quantity={{quantity}} --field payload.price='{{priceJson}}' --field payload.chain='{{chain}}' {{#if offerTo}--field payload.offerTo='{{offerTo}}'{{/if}} {{#if expireTime}--field payload.expireTime={{expireTime}}{{/if}} {{#if inputJson}}--input-json '{{inputJson}}'{{/if}}",
       "description": "Forest skill (structured): aelf-forest-make-offer",
-      "working_directory": ".",
-      "parameters": {
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run src/cli/forest_skill.ts run --skill aelf-forest-make-offer --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --field payload.symbol='{{symbol}}' --field payload.quantity={{quantity}} --field payload.price='{{priceJson}}' --field payload.chain='{{chain}}' {{#if offerTo}--field payload.offerTo='{{offerTo}}'{{/if}} {{#if expireTime}--field payload.expireTime={{expireTime}}{{/if}} {{#if inputJson}}--input-json '{{inputJson}}'{{/if}}"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          },
+          "inputJson": {
+            "type": "string",
+            "description": "Optional JSON object for additional fields; structured fields override conflicting keys"
+          },
+          "symbol": {
+            "type": "string",
+            "description": "NFT symbol"
+          },
+          "quantity": {
+            "type": "number",
+            "description": "Offer quantity"
+          },
+          "priceJson": {
+            "type": "string",
+            "description": "JSON string for price object"
+          },
+          "chain": {
+            "type": "string",
+            "description": "Chain: AELF | tDVV | tDVW"
+          },
+          "offerTo": {
+            "type": "string",
+            "description": "Optional target address"
+          },
+          "expireTime": {
+            "type": "number",
+            "description": "Optional expire timestamp"
+          }
         },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        },
-        "inputJson": {
-          "type": "string",
-          "required": false,
-          "description": "Optional JSON object for additional fields; structured fields override conflicting keys"
-        },
-        "symbol": {
-          "type": "string",
-          "required": true,
-          "description": "NFT symbol"
-        },
-        "quantity": {
-          "type": "number",
-          "required": true,
-          "description": "Offer quantity"
-        },
-        "priceJson": {
-          "type": "string",
-          "required": true,
-          "description": "JSON string for price object"
-        },
-        "chain": {
-          "type": "string",
-          "required": true,
-          "description": "Chain: AELF | tDVV | tDVW"
-        },
-        "offerTo": {
-          "type": "string",
-          "required": false,
-          "description": "Optional target address"
-        },
-        "expireTime": {
-          "type": "number",
-          "required": false,
-          "description": "Optional expire timestamp"
-        }
+        "required": [
+          "symbol",
+          "quantity",
+          "priceJson",
+          "chain"
+        ],
+        "additionalProperties": true
       }
     },
     {
       "name": "aelf-forest-deal-offer",
-      "command": "bun run src/cli/forest_skill.ts run --skill aelf-forest-deal-offer --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --field payload.symbol='{{symbol}}' --field payload.offerFrom='{{offerFrom}}' --field payload.quantity={{quantity}} --field payload.price='{{priceJson}}' --field payload.chain='{{chain}}' {{#if inputJson}}--input-json '{{inputJson}}'{{/if}}",
       "description": "Forest skill (structured): aelf-forest-deal-offer",
-      "working_directory": ".",
-      "parameters": {
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run src/cli/forest_skill.ts run --skill aelf-forest-deal-offer --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --field payload.symbol='{{symbol}}' --field payload.offerFrom='{{offerFrom}}' --field payload.quantity={{quantity}} --field payload.price='{{priceJson}}' --field payload.chain='{{chain}}' {{#if inputJson}}--input-json '{{inputJson}}'{{/if}}"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          },
+          "inputJson": {
+            "type": "string",
+            "description": "Optional JSON object for additional fields; structured fields override conflicting keys"
+          },
+          "symbol": {
+            "type": "string",
+            "description": "NFT symbol"
+          },
+          "offerFrom": {
+            "type": "string",
+            "description": "Offer maker address"
+          },
+          "quantity": {
+            "type": "number",
+            "description": "Deal quantity"
+          },
+          "priceJson": {
+            "type": "string",
+            "description": "JSON string for price object"
+          },
+          "chain": {
+            "type": "string",
+            "description": "Chain: AELF | tDVV | tDVW"
+          }
         },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        },
-        "inputJson": {
-          "type": "string",
-          "required": false,
-          "description": "Optional JSON object for additional fields; structured fields override conflicting keys"
-        },
-        "symbol": {
-          "type": "string",
-          "required": true,
-          "description": "NFT symbol"
-        },
-        "offerFrom": {
-          "type": "string",
-          "required": true,
-          "description": "Offer maker address"
-        },
-        "quantity": {
-          "type": "number",
-          "required": true,
-          "description": "Deal quantity"
-        },
-        "priceJson": {
-          "type": "string",
-          "required": true,
-          "description": "JSON string for price object"
-        },
-        "chain": {
-          "type": "string",
-          "required": true,
-          "description": "Chain: AELF | tDVV | tDVW"
-        }
+        "required": [
+          "symbol",
+          "offerFrom",
+          "quantity",
+          "priceJson",
+          "chain"
+        ],
+        "additionalProperties": true
       }
     },
     {
       "name": "aelf-forest-cancel-offer",
-      "command": "bun run src/cli/forest_skill.ts run --skill aelf-forest-cancel-offer --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --field payload.mode='{{mode}}' --field payload.chain='{{chain}}' {{#if paramsJson}--field payload.params='{{paramsJson}}'{{/if}} {{#if inputJson}}--input-json '{{inputJson}}'{{/if}}",
       "description": "Forest skill (structured): aelf-forest-cancel-offer",
-      "working_directory": ".",
-      "parameters": {
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run src/cli/forest_skill.ts run --skill aelf-forest-cancel-offer --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --field payload.mode='{{mode}}' --field payload.chain='{{chain}}' {{#if paramsJson}--field payload.params='{{paramsJson}}'{{/if}} {{#if inputJson}}--input-json '{{inputJson}}'{{/if}}"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          },
+          "inputJson": {
+            "type": "string",
+            "description": "Optional JSON object for additional fields; structured fields override conflicting keys"
+          },
+          "mode": {
+            "type": "string",
+            "description": "single | batch"
+          },
+          "chain": {
+            "type": "string",
+            "description": "Chain: AELF | tDVV | tDVW"
+          },
+          "paramsJson": {
+            "type": "string",
+            "description": "Optional JSON string for payload.params"
+          }
         },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        },
-        "inputJson": {
-          "type": "string",
-          "required": false,
-          "description": "Optional JSON object for additional fields; structured fields override conflicting keys"
-        },
-        "mode": {
-          "type": "string",
-          "required": true,
-          "description": "single | batch"
-        },
-        "chain": {
-          "type": "string",
-          "required": true,
-          "description": "Chain: AELF | tDVV | tDVW"
-        },
-        "paramsJson": {
-          "type": "string",
-          "required": false,
-          "description": "Optional JSON string for payload.params"
-        }
+        "required": [
+          "mode",
+          "chain"
+        ],
+        "additionalProperties": true
       }
     },
     {
       "name": "aelf-forest-cancel-listing",
-      "command": "bun run src/cli/forest_skill.ts run --skill aelf-forest-cancel-listing --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --field payload.mode='{{mode}}' --field payload.chain='{{chain}}' {{#if paramsJson}--field payload.params='{{paramsJson}}'{{/if}} {{#if inputJson}}--input-json '{{inputJson}}'{{/if}}",
       "description": "Forest skill (structured): aelf-forest-cancel-listing",
-      "working_directory": ".",
-      "parameters": {
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run src/cli/forest_skill.ts run --skill aelf-forest-cancel-listing --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --field payload.mode='{{mode}}' --field payload.chain='{{chain}}' {{#if paramsJson}--field payload.params='{{paramsJson}}'{{/if}} {{#if inputJson}}--input-json '{{inputJson}}'{{/if}}"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          },
+          "inputJson": {
+            "type": "string",
+            "description": "Optional JSON object for additional fields; structured fields override conflicting keys"
+          },
+          "mode": {
+            "type": "string",
+            "description": "single | batch | batchDelist | batchCancelList"
+          },
+          "chain": {
+            "type": "string",
+            "description": "Chain: AELF | tDVV | tDVW"
+          },
+          "paramsJson": {
+            "type": "string",
+            "description": "Optional JSON string for payload.params"
+          }
         },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        },
-        "inputJson": {
-          "type": "string",
-          "required": false,
-          "description": "Optional JSON object for additional fields; structured fields override conflicting keys"
-        },
-        "mode": {
-          "type": "string",
-          "required": true,
-          "description": "single | batch | batchDelist | batchCancelList"
-        },
-        "chain": {
-          "type": "string",
-          "required": true,
-          "description": "Chain: AELF | tDVV | tDVW"
-        },
-        "paramsJson": {
-          "type": "string",
-          "required": false,
-          "description": "Optional JSON string for payload.params"
-        }
+        "required": [
+          "mode",
+          "chain"
+        ],
+        "additionalProperties": true
       }
     },
     {
       "name": "aelf-forest-transfer-item",
-      "command": "bun run src/cli/forest_skill.ts run --skill aelf-forest-transfer-item --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --field payload.symbol='{{symbol}}' --field payload.to='{{to}}' --field payload.amount={{amount}} --field payload.chain='{{chain}}' {{#if inputJson}}--input-json '{{inputJson}}'{{/if}}",
       "description": "Forest skill (structured): aelf-forest-transfer-item",
-      "working_directory": ".",
-      "parameters": {
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run src/cli/forest_skill.ts run --skill aelf-forest-transfer-item --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --field payload.symbol='{{symbol}}' --field payload.to='{{to}}' --field payload.amount={{amount}} --field payload.chain='{{chain}}' {{#if inputJson}}--input-json '{{inputJson}}'{{/if}}"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          },
+          "inputJson": {
+            "type": "string",
+            "description": "Optional JSON object for additional fields; structured fields override conflicting keys"
+          },
+          "symbol": {
+            "type": "string",
+            "description": "NFT symbol"
+          },
+          "to": {
+            "type": "string",
+            "description": "Recipient address"
+          },
+          "amount": {
+            "type": "number",
+            "description": "Transfer amount"
+          },
+          "chain": {
+            "type": "string",
+            "description": "Chain: AELF | tDVV | tDVW"
+          }
         },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        },
-        "inputJson": {
-          "type": "string",
-          "required": false,
-          "description": "Optional JSON object for additional fields; structured fields override conflicting keys"
-        },
-        "symbol": {
-          "type": "string",
-          "required": true,
-          "description": "NFT symbol"
-        },
-        "to": {
-          "type": "string",
-          "required": true,
-          "description": "Recipient address"
-        },
-        "amount": {
-          "type": "number",
-          "required": true,
-          "description": "Transfer amount"
-        },
-        "chain": {
-          "type": "string",
-          "required": true,
-          "description": "Chain: AELF | tDVV | tDVW"
-        }
+        "required": [
+          "symbol",
+          "to",
+          "amount",
+          "chain"
+        ],
+        "additionalProperties": true
       }
     },
     {
       "name": "aelf-forest-get-price-quote",
-      "command": "bun run src/cli/forest_skill.ts run --skill aelf-forest-get-price-quote --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --field payload.symbol='{{symbol}}' {{#if nftId}--field payload.nftId='{{nftId}}'{{/if}} {{#if chain}--field payload.chain='{{chain}}'{{/if}} {{#if includeJson}--field payload.include='{{includeJson}}'{{/if}} {{#if inputJson}}--input-json '{{inputJson}}'{{/if}}",
       "description": "Forest skill (structured): aelf-forest-get-price-quote",
-      "working_directory": ".",
-      "parameters": {
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run src/cli/forest_skill.ts run --skill aelf-forest-get-price-quote --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --field payload.symbol='{{symbol}}' {{#if nftId}--field payload.nftId='{{nftId}}'{{/if}} {{#if chain}--field payload.chain='{{chain}}'{{/if}} {{#if includeJson}--field payload.include='{{includeJson}}'{{/if}} {{#if inputJson}}--input-json '{{inputJson}}'{{/if}}"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          },
+          "inputJson": {
+            "type": "string",
+            "description": "Optional JSON object for additional fields; structured fields override conflicting keys"
+          },
+          "symbol": {
+            "type": "string",
+            "description": "NFT symbol"
+          },
+          "nftId": {
+            "type": "string",
+            "description": "Optional NFT ID"
+          },
+          "chain": {
+            "type": "string",
+            "description": "Optional chain"
+          },
+          "includeJson": {
+            "type": "string",
+            "description": "Optional JSON array string for include fields"
+          }
         },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        },
-        "inputJson": {
-          "type": "string",
-          "required": false,
-          "description": "Optional JSON object for additional fields; structured fields override conflicting keys"
-        },
-        "symbol": {
-          "type": "string",
-          "required": true,
-          "description": "NFT symbol"
-        },
-        "nftId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional NFT ID"
-        },
-        "chain": {
-          "type": "string",
-          "required": false,
-          "description": "Optional chain"
-        },
-        "includeJson": {
-          "type": "string",
-          "required": false,
-          "description": "Optional JSON array string for include fields"
-        }
+        "required": [
+          "symbol"
+        ],
+        "additionalProperties": true
       }
     },
     {
       "name": "aelf-forest-issue-item",
-      "command": "bun run src/cli/forest_skill.ts run --skill aelf-forest-issue-item --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'",
       "description": "Forest skill (inputJson): aelf-forest-issue-item",
-      "working_directory": ".",
-      "parameters": {
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run src/cli/forest_skill.ts run --skill aelf-forest-issue-item --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          },
+          "inputJson": {
+            "type": "string",
+            "description": "JSON object string for full skill input"
+          }
         },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        },
-        "inputJson": {
-          "type": "string",
-          "required": true,
-          "description": "JSON object string for full skill input"
-        }
+        "required": [
+          "inputJson"
+        ],
+        "additionalProperties": true
       }
     },
     {
       "name": "aelf-forest-place-bid",
-      "command": "bun run src/cli/forest_skill.ts run --skill aelf-forest-place-bid --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'",
       "description": "Forest skill (inputJson): aelf-forest-place-bid",
-      "working_directory": ".",
-      "parameters": {
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run src/cli/forest_skill.ts run --skill aelf-forest-place-bid --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          },
+          "inputJson": {
+            "type": "string",
+            "description": "JSON object string for full skill input"
+          }
         },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        },
-        "inputJson": {
-          "type": "string",
-          "required": true,
-          "description": "JSON object string for full skill input"
-        }
+        "required": [
+          "inputJson"
+        ],
+        "additionalProperties": true
       }
     },
     {
       "name": "aelf-forest-claim-drop",
-      "command": "bun run src/cli/forest_skill.ts run --skill aelf-forest-claim-drop --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'",
       "description": "Forest skill (inputJson): aelf-forest-claim-drop",
-      "working_directory": ".",
-      "parameters": {
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run src/cli/forest_skill.ts run --skill aelf-forest-claim-drop --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          },
+          "inputJson": {
+            "type": "string",
+            "description": "JSON object string for full skill input"
+          }
         },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        },
-        "inputJson": {
-          "type": "string",
-          "required": true,
-          "description": "JSON object string for full skill input"
-        }
+        "required": [
+          "inputJson"
+        ],
+        "additionalProperties": true
       }
     },
     {
       "name": "aelf-forest-query-drop",
-      "command": "bun run src/cli/forest_skill.ts run --skill aelf-forest-query-drop --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'",
       "description": "Forest skill (inputJson): aelf-forest-query-drop",
-      "working_directory": ".",
-      "parameters": {
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run src/cli/forest_skill.ts run --skill aelf-forest-query-drop --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          },
+          "inputJson": {
+            "type": "string",
+            "description": "JSON object string for full skill input"
+          }
         },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        },
-        "inputJson": {
-          "type": "string",
-          "required": true,
-          "description": "JSON object string for full skill input"
-        }
+        "required": [
+          "inputJson"
+        ],
+        "additionalProperties": true
       }
     },
     {
       "name": "aelf-forest-whitelist-read",
-      "command": "bun run src/cli/forest_skill.ts run --skill aelf-forest-whitelist-read --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'",
       "description": "Forest skill (inputJson): aelf-forest-whitelist-read",
-      "working_directory": ".",
-      "parameters": {
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run src/cli/forest_skill.ts run --skill aelf-forest-whitelist-read --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          },
+          "inputJson": {
+            "type": "string",
+            "description": "JSON object string for full skill input"
+          }
         },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        },
-        "inputJson": {
-          "type": "string",
-          "required": true,
-          "description": "JSON object string for full skill input"
-        }
+        "required": [
+          "inputJson"
+        ],
+        "additionalProperties": true
       }
     },
     {
       "name": "aelf-forest-whitelist-manage",
-      "command": "bun run src/cli/forest_skill.ts run --skill aelf-forest-whitelist-manage --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'",
       "description": "Forest skill (inputJson): aelf-forest-whitelist-manage",
-      "working_directory": ".",
-      "parameters": {
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run src/cli/forest_skill.ts run --skill aelf-forest-whitelist-manage --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          },
+          "inputJson": {
+            "type": "string",
+            "description": "JSON object string for full skill input"
+          }
         },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        },
-        "inputJson": {
-          "type": "string",
-          "required": true,
-          "description": "JSON object string for full skill input"
-        }
+        "required": [
+          "inputJson"
+        ],
+        "additionalProperties": true
       }
     },
     {
       "name": "aelf-forest-ai-generate",
-      "command": "bun run src/cli/forest_skill.ts run --skill aelf-forest-ai-generate --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'",
       "description": "Forest skill (inputJson): aelf-forest-ai-generate",
-      "working_directory": ".",
-      "parameters": {
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run src/cli/forest_skill.ts run --skill aelf-forest-ai-generate --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          },
+          "inputJson": {
+            "type": "string",
+            "description": "JSON object string for full skill input"
+          }
         },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        },
-        "inputJson": {
-          "type": "string",
-          "required": true,
-          "description": "JSON object string for full skill input"
-        }
+        "required": [
+          "inputJson"
+        ],
+        "additionalProperties": true
       }
     },
     {
       "name": "aelf-forest-ai-retry",
-      "command": "bun run src/cli/forest_skill.ts run --skill aelf-forest-ai-retry --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'",
       "description": "Forest skill (inputJson): aelf-forest-ai-retry",
-      "working_directory": ".",
-      "parameters": {
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run src/cli/forest_skill.ts run --skill aelf-forest-ai-retry --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          },
+          "inputJson": {
+            "type": "string",
+            "description": "JSON object string for full skill input"
+          }
         },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        },
-        "inputJson": {
-          "type": "string",
-          "required": true,
-          "description": "JSON object string for full skill input"
-        }
+        "required": [
+          "inputJson"
+        ],
+        "additionalProperties": true
       }
     },
     {
       "name": "aelf-forest-create-platform-nft",
-      "command": "bun run src/cli/forest_skill.ts run --skill aelf-forest-create-platform-nft --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'",
       "description": "Forest skill (inputJson): aelf-forest-create-platform-nft",
-      "working_directory": ".",
-      "parameters": {
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run src/cli/forest_skill.ts run --skill aelf-forest-create-platform-nft --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          },
+          "inputJson": {
+            "type": "string",
+            "description": "JSON object string for full skill input"
+          }
         },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        },
-        "inputJson": {
-          "type": "string",
-          "required": true,
-          "description": "JSON object string for full skill input"
-        }
+        "required": [
+          "inputJson"
+        ],
+        "additionalProperties": true
       }
     },
     {
       "name": "aelf-forest-miniapp-action",
-      "command": "bun run src/cli/forest_skill.ts run --skill aelf-forest-miniapp-action --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'",
       "description": "Forest skill (inputJson): aelf-forest-miniapp-action",
-      "working_directory": ".",
-      "parameters": {
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run src/cli/forest_skill.ts run --skill aelf-forest-miniapp-action --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          },
+          "inputJson": {
+            "type": "string",
+            "description": "JSON object string for full skill input"
+          }
         },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        },
-        "inputJson": {
-          "type": "string",
-          "required": true,
-          "description": "JSON object string for full skill input"
-        }
+        "required": [
+          "inputJson"
+        ],
+        "additionalProperties": true
       }
     },
     {
       "name": "aelf-forest-update-profile",
-      "command": "bun run src/cli/forest_skill.ts run --skill aelf-forest-update-profile --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'",
       "description": "Forest skill (inputJson): aelf-forest-update-profile",
-      "working_directory": ".",
-      "parameters": {
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run src/cli/forest_skill.ts run --skill aelf-forest-update-profile --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          },
+          "inputJson": {
+            "type": "string",
+            "description": "JSON object string for full skill input"
+          }
         },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        },
-        "inputJson": {
-          "type": "string",
-          "required": true,
-          "description": "JSON object string for full skill input"
-        }
+        "required": [
+          "inputJson"
+        ],
+        "additionalProperties": true
       }
     },
     {
       "name": "aelf-forest-query-collections",
-      "command": "bun run src/cli/forest_skill.ts run --skill aelf-forest-query-collections --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --field action='{{action}}' {{#if paramsJson}--field params='{{paramsJson}}'{{/if}} {{#if inputJson}}--input-json '{{inputJson}}'{{/if}}",
       "description": "Forest skill (structured): aelf-forest-query-collections",
-      "working_directory": ".",
-      "parameters": {
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run src/cli/forest_skill.ts run --skill aelf-forest-query-collections --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --field action='{{action}}' {{#if paramsJson}--field params='{{paramsJson}}'{{/if}} {{#if inputJson}}--input-json '{{inputJson}}'{{/if}}"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          },
+          "inputJson": {
+            "type": "string",
+            "description": "Optional JSON object for additional fields; structured fields override conflicting keys"
+          },
+          "action": {
+            "type": "string",
+            "description": "collections | searchCollections | recommendedCollections | collectionInfo | compositeNftInfos | traits | generation | rarity | activities | trending | hot"
+          },
+          "paramsJson": {
+            "type": "string",
+            "description": "Optional JSON string for params"
+          }
         },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        },
-        "inputJson": {
-          "type": "string",
-          "required": false,
-          "description": "Optional JSON object for additional fields; structured fields override conflicting keys"
-        },
-        "action": {
-          "type": "string",
-          "required": true,
-          "description": "collections | searchCollections | recommendedCollections | collectionInfo | compositeNftInfos | traits | generation | rarity | activities | trending | hot"
-        },
-        "paramsJson": {
-          "type": "string",
-          "required": false,
-          "description": "Optional JSON string for params"
-        }
+        "required": [
+          "action"
+        ],
+        "additionalProperties": true
       }
     },
     {
       "name": "aelf-forest-watch-market-signals",
-      "command": "bun run src/cli/forest_skill.ts run --skill aelf-forest-watch-market-signals --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'",
       "description": "Forest skill (inputJson): aelf-forest-watch-market-signals",
-      "working_directory": ".",
-      "parameters": {
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run src/cli/forest_skill.ts run --skill aelf-forest-watch-market-signals --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          },
+          "inputJson": {
+            "type": "string",
+            "description": "JSON object string for full skill input"
+          }
         },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        },
-        "inputJson": {
-          "type": "string",
-          "required": true,
-          "description": "JSON object string for full skill input"
-        }
+        "required": [
+          "inputJson"
+        ],
+        "additionalProperties": true
       }
     },
     {
       "name": "aelf-forest-contract-market",
-      "command": "bun run src/cli/forest_skill.ts run --skill aelf-forest-contract-market --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'",
       "description": "Forest skill (inputJson): aelf-forest-contract-market",
-      "working_directory": ".",
-      "parameters": {
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run src/cli/forest_skill.ts run --skill aelf-forest-contract-market --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          },
+          "inputJson": {
+            "type": "string",
+            "description": "JSON object string for full skill input"
+          }
         },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        },
-        "inputJson": {
-          "type": "string",
-          "required": true,
-          "description": "JSON object string for full skill input"
-        }
+        "required": [
+          "inputJson"
+        ],
+        "additionalProperties": true
       }
     },
     {
       "name": "aelf-forest-contract-multitoken",
-      "command": "bun run src/cli/forest_skill.ts run --skill aelf-forest-contract-multitoken --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'",
       "description": "Forest skill (inputJson): aelf-forest-contract-multitoken",
-      "working_directory": ".",
-      "parameters": {
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run src/cli/forest_skill.ts run --skill aelf-forest-contract-multitoken --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          },
+          "inputJson": {
+            "type": "string",
+            "description": "JSON object string for full skill input"
+          }
         },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        },
-        "inputJson": {
-          "type": "string",
-          "required": true,
-          "description": "JSON object string for full skill input"
-        }
+        "required": [
+          "inputJson"
+        ],
+        "additionalProperties": true
       }
     },
     {
       "name": "aelf-forest-contract-token-adapter",
-      "command": "bun run src/cli/forest_skill.ts run --skill aelf-forest-contract-token-adapter --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'",
       "description": "Forest skill (inputJson): aelf-forest-contract-token-adapter",
-      "working_directory": ".",
-      "parameters": {
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run src/cli/forest_skill.ts run --skill aelf-forest-contract-token-adapter --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          },
+          "inputJson": {
+            "type": "string",
+            "description": "JSON object string for full skill input"
+          }
         },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        },
-        "inputJson": {
-          "type": "string",
-          "required": true,
-          "description": "JSON object string for full skill input"
-        }
+        "required": [
+          "inputJson"
+        ],
+        "additionalProperties": true
       }
     },
     {
       "name": "aelf-forest-contract-proxy",
-      "command": "bun run src/cli/forest_skill.ts run --skill aelf-forest-contract-proxy --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'",
       "description": "Forest skill (inputJson): aelf-forest-contract-proxy",
-      "working_directory": ".",
-      "parameters": {
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run src/cli/forest_skill.ts run --skill aelf-forest-contract-proxy --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          },
+          "inputJson": {
+            "type": "string",
+            "description": "JSON object string for full skill input"
+          }
         },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        },
-        "inputJson": {
-          "type": "string",
-          "required": true,
-          "description": "JSON object string for full skill input"
-        }
+        "required": [
+          "inputJson"
+        ],
+        "additionalProperties": true
       }
     },
     {
       "name": "aelf-forest-contract-auction",
-      "command": "bun run src/cli/forest_skill.ts run --skill aelf-forest-contract-auction --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'",
       "description": "Forest skill (inputJson): aelf-forest-contract-auction",
-      "working_directory": ".",
-      "parameters": {
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run src/cli/forest_skill.ts run --skill aelf-forest-contract-auction --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          },
+          "inputJson": {
+            "type": "string",
+            "description": "JSON object string for full skill input"
+          }
         },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        },
-        "inputJson": {
-          "type": "string",
-          "required": true,
-          "description": "JSON object string for full skill input"
-        }
+        "required": [
+          "inputJson"
+        ],
+        "additionalProperties": true
       }
     },
     {
       "name": "aelf-forest-contract-drop",
-      "command": "bun run src/cli/forest_skill.ts run --skill aelf-forest-contract-drop --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'",
       "description": "Forest skill (inputJson): aelf-forest-contract-drop",
-      "working_directory": ".",
-      "parameters": {
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run src/cli/forest_skill.ts run --skill aelf-forest-contract-drop --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          },
+          "inputJson": {
+            "type": "string",
+            "description": "JSON object string for full skill input"
+          }
         },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        },
-        "inputJson": {
-          "type": "string",
-          "required": true,
-          "description": "JSON object string for full skill input"
-        }
+        "required": [
+          "inputJson"
+        ],
+        "additionalProperties": true
       }
     },
     {
       "name": "aelf-forest-contract-whitelist",
-      "command": "bun run src/cli/forest_skill.ts run --skill aelf-forest-contract-whitelist --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'",
       "description": "Forest skill (inputJson): aelf-forest-contract-whitelist",
-      "working_directory": ".",
-      "parameters": {
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run src/cli/forest_skill.ts run --skill aelf-forest-contract-whitelist --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          },
+          "inputJson": {
+            "type": "string",
+            "description": "JSON object string for full skill input"
+          }
         },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        },
-        "inputJson": {
-          "type": "string",
-          "required": true,
-          "description": "JSON object string for full skill input"
-        }
+        "required": [
+          "inputJson"
+        ],
+        "additionalProperties": true
       }
     },
     {
       "name": "aelf-forest-contract-miniapp",
-      "command": "bun run src/cli/forest_skill.ts run --skill aelf-forest-contract-miniapp --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'",
       "description": "Forest skill (inputJson): aelf-forest-contract-miniapp",
-      "working_directory": ".",
-      "parameters": {
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run src/cli/forest_skill.ts run --skill aelf-forest-contract-miniapp --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          },
+          "inputJson": {
+            "type": "string",
+            "description": "JSON object string for full skill input"
+          }
         },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        },
-        "inputJson": {
-          "type": "string",
-          "required": true,
-          "description": "JSON object string for full skill input"
-        }
+        "required": [
+          "inputJson"
+        ],
+        "additionalProperties": true
       }
     },
     {
       "name": "aelf-forest-api-market",
-      "command": "bun run src/cli/forest_skill.ts run --skill aelf-forest-api-market --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'",
       "description": "Forest skill (inputJson): aelf-forest-api-market",
-      "working_directory": ".",
-      "parameters": {
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run src/cli/forest_skill.ts run --skill aelf-forest-api-market --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          },
+          "inputJson": {
+            "type": "string",
+            "description": "JSON object string for full skill input"
+          }
         },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        },
-        "inputJson": {
-          "type": "string",
-          "required": true,
-          "description": "JSON object string for full skill input"
-        }
+        "required": [
+          "inputJson"
+        ],
+        "additionalProperties": true
       }
     },
     {
       "name": "aelf-forest-api-nft",
-      "command": "bun run src/cli/forest_skill.ts run --skill aelf-forest-api-nft --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'",
       "description": "Forest skill (inputJson): aelf-forest-api-nft",
-      "working_directory": ".",
-      "parameters": {
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run src/cli/forest_skill.ts run --skill aelf-forest-api-nft --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          },
+          "inputJson": {
+            "type": "string",
+            "description": "JSON object string for full skill input"
+          }
         },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        },
-        "inputJson": {
-          "type": "string",
-          "required": true,
-          "description": "JSON object string for full skill input"
-        }
+        "required": [
+          "inputJson"
+        ],
+        "additionalProperties": true
       }
     },
     {
       "name": "aelf-forest-api-collection",
-      "command": "bun run src/cli/forest_skill.ts run --skill aelf-forest-api-collection --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'",
       "description": "Forest skill (inputJson): aelf-forest-api-collection",
-      "working_directory": ".",
-      "parameters": {
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run src/cli/forest_skill.ts run --skill aelf-forest-api-collection --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          },
+          "inputJson": {
+            "type": "string",
+            "description": "JSON object string for full skill input"
+          }
         },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        },
-        "inputJson": {
-          "type": "string",
-          "required": true,
-          "description": "JSON object string for full skill input"
-        }
+        "required": [
+          "inputJson"
+        ],
+        "additionalProperties": true
       }
     },
     {
       "name": "aelf-forest-api-sync",
-      "command": "bun run src/cli/forest_skill.ts run --skill aelf-forest-api-sync --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'",
       "description": "Forest skill (inputJson): aelf-forest-api-sync",
-      "working_directory": ".",
-      "parameters": {
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run src/cli/forest_skill.ts run --skill aelf-forest-api-sync --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          },
+          "inputJson": {
+            "type": "string",
+            "description": "JSON object string for full skill input"
+          }
         },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        },
-        "inputJson": {
-          "type": "string",
-          "required": true,
-          "description": "JSON object string for full skill input"
-        }
+        "required": [
+          "inputJson"
+        ],
+        "additionalProperties": true
       }
     },
     {
       "name": "aelf-forest-api-seed-auction",
-      "command": "bun run src/cli/forest_skill.ts run --skill aelf-forest-api-seed-auction --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'",
       "description": "Forest skill (inputJson): aelf-forest-api-seed-auction",
-      "working_directory": ".",
-      "parameters": {
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run src/cli/forest_skill.ts run --skill aelf-forest-api-seed-auction --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          },
+          "inputJson": {
+            "type": "string",
+            "description": "JSON object string for full skill input"
+          }
         },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        },
-        "inputJson": {
-          "type": "string",
-          "required": true,
-          "description": "JSON object string for full skill input"
-        }
+        "required": [
+          "inputJson"
+        ],
+        "additionalProperties": true
       }
     },
     {
       "name": "aelf-forest-api-drop",
-      "command": "bun run src/cli/forest_skill.ts run --skill aelf-forest-api-drop --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'",
       "description": "Forest skill (inputJson): aelf-forest-api-drop",
-      "working_directory": ".",
-      "parameters": {
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run src/cli/forest_skill.ts run --skill aelf-forest-api-drop --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          },
+          "inputJson": {
+            "type": "string",
+            "description": "JSON object string for full skill input"
+          }
         },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        },
-        "inputJson": {
-          "type": "string",
-          "required": true,
-          "description": "JSON object string for full skill input"
-        }
+        "required": [
+          "inputJson"
+        ],
+        "additionalProperties": true
       }
     },
     {
       "name": "aelf-forest-api-whitelist",
-      "command": "bun run src/cli/forest_skill.ts run --skill aelf-forest-api-whitelist --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'",
       "description": "Forest skill (inputJson): aelf-forest-api-whitelist",
-      "working_directory": ".",
-      "parameters": {
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run src/cli/forest_skill.ts run --skill aelf-forest-api-whitelist --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          },
+          "inputJson": {
+            "type": "string",
+            "description": "JSON object string for full skill input"
+          }
         },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        },
-        "inputJson": {
-          "type": "string",
-          "required": true,
-          "description": "JSON object string for full skill input"
-        }
+        "required": [
+          "inputJson"
+        ],
+        "additionalProperties": true
       }
     },
     {
       "name": "aelf-forest-api-ai",
-      "command": "bun run src/cli/forest_skill.ts run --skill aelf-forest-api-ai --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'",
       "description": "Forest skill (inputJson): aelf-forest-api-ai",
-      "working_directory": ".",
-      "parameters": {
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run src/cli/forest_skill.ts run --skill aelf-forest-api-ai --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          },
+          "inputJson": {
+            "type": "string",
+            "description": "JSON object string for full skill input"
+          }
         },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        },
-        "inputJson": {
-          "type": "string",
-          "required": true,
-          "description": "JSON object string for full skill input"
-        }
+        "required": [
+          "inputJson"
+        ],
+        "additionalProperties": true
       }
     },
     {
       "name": "aelf-forest-api-platform",
-      "command": "bun run src/cli/forest_skill.ts run --skill aelf-forest-api-platform --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'",
       "description": "Forest skill (inputJson): aelf-forest-api-platform",
-      "working_directory": ".",
-      "parameters": {
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run src/cli/forest_skill.ts run --skill aelf-forest-api-platform --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          },
+          "inputJson": {
+            "type": "string",
+            "description": "JSON object string for full skill input"
+          }
         },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        },
-        "inputJson": {
-          "type": "string",
-          "required": true,
-          "description": "JSON object string for full skill input"
-        }
+        "required": [
+          "inputJson"
+        ],
+        "additionalProperties": true
       }
     },
     {
       "name": "aelf-forest-api-miniapp",
-      "command": "bun run src/cli/forest_skill.ts run --skill aelf-forest-api-miniapp --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'",
       "description": "Forest skill (inputJson): aelf-forest-api-miniapp",
-      "working_directory": ".",
-      "parameters": {
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run src/cli/forest_skill.ts run --skill aelf-forest-api-miniapp --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          },
+          "inputJson": {
+            "type": "string",
+            "description": "JSON object string for full skill input"
+          }
         },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        },
-        "inputJson": {
-          "type": "string",
-          "required": true,
-          "description": "JSON object string for full skill input"
-        }
+        "required": [
+          "inputJson"
+        ],
+        "additionalProperties": true
       }
     },
     {
       "name": "aelf-forest-api-user",
-      "command": "bun run src/cli/forest_skill.ts run --skill aelf-forest-api-user --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'",
       "description": "Forest skill (inputJson): aelf-forest-api-user",
-      "working_directory": ".",
-      "parameters": {
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run src/cli/forest_skill.ts run --skill aelf-forest-api-user --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          },
+          "inputJson": {
+            "type": "string",
+            "description": "JSON object string for full skill input"
+          }
         },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        },
-        "inputJson": {
-          "type": "string",
-          "required": true,
-          "description": "JSON object string for full skill input"
-        }
+        "required": [
+          "inputJson"
+        ],
+        "additionalProperties": true
       }
     },
     {
       "name": "aelf-forest-api-system",
-      "command": "bun run src/cli/forest_skill.ts run --skill aelf-forest-api-system --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'",
       "description": "Forest skill (inputJson): aelf-forest-api-system",
-      "working_directory": ".",
-      "parameters": {
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run src/cli/forest_skill.ts run --skill aelf-forest-api-system --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          },
+          "inputJson": {
+            "type": "string",
+            "description": "JSON object string for full skill input"
+          }
         },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        },
-        "inputJson": {
-          "type": "string",
-          "required": true,
-          "description": "JSON object string for full skill input"
-        }
+        "required": [
+          "inputJson"
+        ],
+        "additionalProperties": true
       }
     },
     {
       "name": "aelf-forest-api-realtime",
-      "command": "bun run src/cli/forest_skill.ts run --skill aelf-forest-api-realtime --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'",
       "description": "Forest skill (inputJson): aelf-forest-api-realtime",
-      "working_directory": ".",
-      "parameters": {
-        "env": {
-          "type": "string",
-          "required": false,
-          "default": "mainnet",
-          "description": "Environment: mainnet | testnet"
+      "command": "sh",
+      "args": [
+        "-lc",
+        "bun run src/cli/forest_skill.ts run --skill aelf-forest-api-realtime --env {{env}} {{#if dryRun}}--dry-run{{/if}} {{#if traceId}}--trace-id '{{traceId}}'{{/if}} {{#if timeoutMs}}--timeout-ms {{timeoutMs}}{{/if}} {{#if privateKey}}--private-key '{{privateKey}}'{{/if}} --input-json '{{inputJson}}'"
+      ],
+      "cwd": ".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "env": {
+            "type": "string",
+            "description": "Environment: mainnet | testnet",
+            "default": "mainnet"
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, return dry-run response without write execution",
+            "default": false
+          },
+          "traceId": {
+            "type": "string",
+            "description": "Optional traceId for correlation"
+          },
+          "timeoutMs": {
+            "type": "number",
+            "description": "Optional timeout in milliseconds (1000~180000)"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Optional private key override"
+          },
+          "inputJson": {
+            "type": "string",
+            "description": "JSON object string for full skill input"
+          }
         },
-        "dryRun": {
-          "type": "boolean",
-          "required": false,
-          "default": false,
-          "description": "If true, return dry-run response without write execution"
-        },
-        "traceId": {
-          "type": "string",
-          "required": false,
-          "description": "Optional traceId for correlation"
-        },
-        "timeoutMs": {
-          "type": "number",
-          "required": false,
-          "description": "Optional timeout in milliseconds (1000~180000)"
-        },
-        "privateKey": {
-          "type": "string",
-          "required": false,
-          "description": "Optional private key override"
-        },
-        "inputJson": {
-          "type": "string",
-          "required": true,
-          "description": "JSON object string for full skill input"
-        }
+        "required": [
+          "inputJson"
+        ],
+        "additionalProperties": true
       }
     }
   ]

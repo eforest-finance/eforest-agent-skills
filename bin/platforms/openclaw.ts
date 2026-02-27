@@ -1,33 +1,75 @@
 // ============================================================
-// Setup: OpenClaw — register skills from openclaw.json
+// Setup: OpenClaw — register tools from openclaw.json
 // ============================================================
 
-import * as path from 'path';
 import * as fs from 'fs';
+import * as path from 'path';
 import { getPackageRoot, readJsonFile, writeJsonFile, LOG } from './utils';
 
-/**
- * Backward-compatible fallback names if openclaw.json cannot be read.
- * @deprecated Use dynamic names loaded from openclaw.json.
- */
-const LEGACY_FALLBACK_SKILL_NAMES = new Set([
+type OpenClawTool = {
+  name: string;
+  description?: string;
+  command?: string;
+  args?: string[];
+  cwd?: string;
+  inputSchema?: Record<string, unknown>;
+  [key: string]: unknown;
+};
+
+const LEGACY_FALLBACK_TOOL_NAMES = new Set([
   'aelf-buy-seed',
   'aelf-create-token',
   'aelf-issue-token',
 ]);
 
 function getPackageOpenClawSourceFile(): string {
-  const packageRoot = getPackageRoot();
-  return path.join(packageRoot, 'openclaw.json');
+  return path.join(getPackageRoot(), 'openclaw.json');
 }
 
-function getPackageSkillNames(): Set<string> {
+function loadSourceTools(): OpenClawTool[] {
   const sourceFile = getPackageOpenClawSourceFile();
   const source = readJsonFile(sourceFile);
-  const skills: any[] = source.skills || [];
-  const dynamicNames = new Set<string>(
-    skills
-      .map((skill) => skill?.name)
+
+  if (Array.isArray(source.tools)) {
+    return source.tools as OpenClawTool[];
+  }
+
+  if (Array.isArray(source.skills)) {
+    // Backward-compat: transform legacy skills to tools on read.
+    return (source.skills as any[]).map((skill) => ({
+      name: skill?.name,
+      description: skill?.description,
+      command: 'sh',
+      args: ['-lc', String(skill?.command || '')],
+      cwd: skill?.working_directory || '.',
+      inputSchema: {
+        type: 'object',
+        properties: Object.fromEntries(
+          Object.entries(skill?.parameters || {}).map(([key, value]: [string, any]) => [
+            key,
+            {
+              type: value?.type || 'string',
+              description: value?.description || `${key} parameter`,
+              ...(value?.default === undefined ? {} : { default: value.default }),
+            },
+          ]),
+        ),
+        required: Object.entries(skill?.parameters || {})
+          .filter(([, value]: [string, any]) => Boolean(value?.required))
+          .map(([key]) => key),
+        additionalProperties: true,
+      },
+    }));
+  }
+
+  return [];
+}
+
+function getPackageToolNames(): Set<string> {
+  const tools = loadSourceTools();
+  const dynamicNames = new Set(
+    tools
+      .map((tool) => tool?.name)
       .filter((name): name is string => typeof name === 'string' && name.length > 0),
   );
 
@@ -35,7 +77,7 @@ function getPackageSkillNames(): Set<string> {
     return dynamicNames;
   }
 
-  return LEGACY_FALLBACK_SKILL_NAMES;
+  return LEGACY_FALLBACK_TOOL_NAMES;
 }
 
 export function setupOpenClaw(opts: {
@@ -50,68 +92,62 @@ export function setupOpenClaw(opts: {
     return false;
   }
 
-  const source = readJsonFile(sourceFile);
-  const skills: any[] = source.skills || [];
-
-  if (!skills.length) {
-    LOG.error('No skills found in openclaw.json');
+  const tools = loadSourceTools();
+  if (!tools.length) {
+    LOG.error('No tools found in openclaw.json');
     return false;
   }
 
-  // Resolve working_directory for all skills — use explicit cwd, or package root
   const resolvedCwd = opts.cwd || getPackageRoot();
-
-  const updatedSkills = skills.map((skill: any) => ({
-    ...skill,
-    working_directory: resolvedCwd,
+  const updatedTools = tools.map((tool) => ({
+    ...tool,
+    cwd: resolvedCwd,
   }));
 
-  // If user specified a target config path, merge into it
   if (opts.configPath) {
-    LOG.step(`Merging ${skills.length} skills into: ${opts.configPath}`);
+    LOG.step(`Merging ${updatedTools.length} tools into: ${opts.configPath}`);
 
     const existing = readJsonFile(opts.configPath);
-    if (!existing.skills) existing.skills = [];
+    if (!Array.isArray(existing.tools)) {
+      existing.tools = [];
+    }
 
     let added = 0;
     let updated = 0;
     let skipped = 0;
 
-    for (const skill of updatedSkills) {
-      const idx = existing.skills.findIndex(
-        (s: any) => s.name === skill.name,
-      );
+    for (const tool of updatedTools) {
+      const idx = existing.tools.findIndex((item: OpenClawTool) => item.name === tool.name);
       if (idx >= 0) {
         if (opts.force) {
-          existing.skills[idx] = skill;
-          updated++;
+          existing.tools[idx] = tool;
+          updated += 1;
         } else {
-          skipped++;
+          skipped += 1;
         }
       } else {
-        existing.skills.push(skill);
-        added++;
+        existing.tools.push(tool);
+        added += 1;
       }
     }
 
     writeJsonFile(opts.configPath, existing);
-    LOG.success(
-      `OpenClaw config updated: ${added} added, ${updated} updated, ${skipped} skipped.`,
-    );
+    LOG.success(`OpenClaw config updated: ${added} added, ${updated} updated, ${skipped} skipped.`);
     if (skipped > 0) {
-      LOG.info('Use --force to overwrite existing skills.');
+      LOG.info('Use --force to overwrite existing tools.');
     }
   } else {
-    // No target path: generate a standalone config file in current dir
     const outPath = path.join(process.cwd(), 'eforest-openclaw.json');
     LOG.step(`Generating OpenClaw config: ${outPath}`);
-    LOG.step(`Skill working_directory: ${resolvedCwd}`);
+    LOG.step(`Tool cwd: ${resolvedCwd}`);
 
-    writeJsonFile(outPath, { skills: updatedSkills });
+    writeJsonFile(outPath, {
+      name: 'eforest-agent-skills',
+      description: 'eForest OpenClaw tools',
+      tools: updatedTools,
+    });
     LOG.success(`OpenClaw config generated: ${outPath}`);
-    LOG.info(
-      `Contains ${updatedSkills.length} skills with working_directory set to: ${resolvedCwd}`,
-    );
+    LOG.info(`Contains ${updatedTools.length} tools with cwd set to: ${resolvedCwd}`);
     LOG.info('Import this file into your OpenClaw configuration.');
   }
 
@@ -120,32 +156,28 @@ export function setupOpenClaw(opts: {
 
 export function uninstallOpenClaw(opts: { configPath?: string }): boolean {
   if (!opts.configPath) {
-    LOG.info(
-      'OpenClaw: no --config-path specified. Remove skills manually from your OpenClaw config.',
-    );
+    LOG.info('OpenClaw: no --config-path specified. Remove tools manually from your OpenClaw config.');
     return false;
   }
 
   const existing = readJsonFile(opts.configPath);
-  if (!existing.skills?.length) {
-    LOG.info('No skills found in config.');
+  if (!Array.isArray(existing.tools) || existing.tools.length === 0) {
+    LOG.info('No tools found in config.');
     return false;
   }
 
-  const skillNames = getPackageSkillNames();
+  const toolNames = getPackageToolNames();
 
-  const before = existing.skills.length;
-  existing.skills = existing.skills.filter(
-    (s: any) => !skillNames.has(s.name),
-  );
-  const removed = before - existing.skills.length;
+  const before = existing.tools.length;
+  existing.tools = existing.tools.filter((tool: OpenClawTool) => !toolNames.has(tool.name));
+  const removed = before - existing.tools.length;
 
   if (removed === 0) {
-    LOG.info('No eForest skills found in config.');
+    LOG.info('No eForest tools found in config.');
     return false;
   }
 
   writeJsonFile(opts.configPath, existing);
-  LOG.success(`Removed ${removed} eForest skills from OpenClaw config.`);
+  LOG.success(`Removed ${removed} eForest tools from OpenClaw config.`);
   return true;
 }
