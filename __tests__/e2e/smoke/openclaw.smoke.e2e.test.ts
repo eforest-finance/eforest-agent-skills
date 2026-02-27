@@ -9,7 +9,7 @@ const REPO_ROOT = resolve(import.meta.dir, '..', '..', '..');
 const OPENCLAW_PATH = resolve(REPO_ROOT, 'openclaw.json');
 
 describe('e2e smoke - OpenClaw setup flow', () => {
-  test('generate-openclaw generates 48 skills', { timeout: 30000 }, () => {
+  test('generate-openclaw generates 48 tools', { timeout: 30000 }, () => {
     const original = readFileSync(OPENCLAW_PATH, 'utf-8');
 
     try {
@@ -17,8 +17,8 @@ describe('e2e smoke - OpenClaw setup flow', () => {
       expect(result.exitCode).toBe(0);
 
       const generated = JSON.parse(readFileSync(OPENCLAW_PATH, 'utf-8'));
-      expect(Array.isArray(generated.skills)).toBe(true);
-      expect(generated.skills.length).toBe(48);
+      expect(Array.isArray(generated.tools)).toBe(true);
+      expect(generated.tools.length).toBe(48);
     } finally {
       writeFileSync(OPENCLAW_PATH, original, 'utf-8');
     }
@@ -36,13 +36,14 @@ describe('e2e smoke - OpenClaw setup flow', () => {
         configPath,
         JSON.stringify(
           {
-            skills: [
+            tools: [
               {
-                name: 'external-skill',
-                command: 'echo hello',
+                name: 'external-tool',
+                command: 'echo',
+                args: ['hello'],
                 description: 'external',
-                working_directory: '.',
-                parameters: {},
+                cwd: '.',
+                inputSchema: { type: 'object', properties: {}, additionalProperties: true },
               },
             ],
           },
@@ -58,9 +59,9 @@ describe('e2e smoke - OpenClaw setup flow', () => {
       expect(setupResult.exitCode).toBe(0);
 
       const setupConfig = JSON.parse(readFileSync(configPath, 'utf-8'));
-      expect(setupConfig.skills.length).toBe(49);
+      expect(setupConfig.tools.length).toBe(49);
       expect(
-        setupConfig.skills.some((x: any) => x.name === 'aelf-forest-create-item'),
+        setupConfig.tools.some((x: any) => x.name === 'aelf-forest-create-item'),
       ).toBe(true);
 
       const uninstallResult = runCommand(
@@ -69,8 +70,8 @@ describe('e2e smoke - OpenClaw setup flow', () => {
       expect(uninstallResult.exitCode).toBe(0);
 
       const uninstallConfig = JSON.parse(readFileSync(configPath, 'utf-8'));
-      expect(uninstallConfig.skills).toHaveLength(1);
-      expect(uninstallConfig.skills[0].name).toBe('external-skill');
+      expect(uninstallConfig.tools).toHaveLength(1);
+      expect(uninstallConfig.tools[0].name).toBe('external-tool');
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }

@@ -3,7 +3,7 @@
  * Generate OpenClaw skill catalog from registry.
  */
 
-import { writeFileSync } from 'fs';
+import { existsSync, readFileSync, writeFileSync } from 'fs';
 import * as path from 'path';
 
 import { listForestSkills } from '../lib/forest-skill-registry';
@@ -27,7 +27,30 @@ interface OpenClawSkill {
 }
 
 interface OpenClawConfig {
-  skills: OpenClawSkill[];
+  name: string;
+  description: string;
+  tools: OpenClawTool[];
+}
+
+interface OpenClawTool {
+  name: string;
+  description: string;
+  command: string;
+  args: string[];
+  cwd: string;
+  inputSchema: {
+    type: 'object';
+    properties: Record<
+      string,
+      {
+        type: ParamType;
+        description: string;
+        default?: string | number | boolean;
+      }
+    >;
+    required?: string[];
+    additionalProperties: true;
+  };
 }
 
 interface StructuredParamTemplate {
@@ -718,17 +741,64 @@ export function buildForestSkillEntries(): OpenClawSkill[] {
 }
 
 export function buildOpenClawConfig(): OpenClawConfig {
+  const skills = [...buildLegacySkills(), ...buildForestSkillEntries()];
+
   return {
-    skills: [...buildLegacySkills(), ...buildForestSkillEntries()],
+    name: 'eforest-agent-skills',
+    description:
+      'eForest OpenClaw tools for symbol-market and forest domain skills.',
+    tools: skills.map((skill) => toOpenClawTool(skill)),
   };
 }
 
-export function writeOpenClawConfig(outPath?: string): string {
+function toOpenClawTool(skill: OpenClawSkill): OpenClawTool {
+  const properties: Record<
+    string,
+    {
+      type: ParamType;
+      description: string;
+      default?: string | number | boolean;
+    }
+  > = {};
+  const required: string[] = [];
+
+  for (const [name, parameter] of Object.entries(skill.parameters)) {
+    properties[name] = {
+      type: parameter.type,
+      description: parameter.description,
+      ...(parameter.default === undefined ? {} : { default: parameter.default }),
+    };
+
+    if (parameter.required) {
+      required.push(name);
+    }
+  }
+
+  return {
+    name: skill.name,
+    description: skill.description,
+    command: 'sh',
+    args: ['-lc', skill.command],
+    cwd: skill.working_directory,
+    inputSchema: {
+      type: 'object',
+      properties,
+      ...(required.length > 0 ? { required } : {}),
+      additionalProperties: true,
+    },
+  };
+}
+
+export function writeOpenClawConfig(outPath?: string): {
+  targetPath: string;
+  serialized: string;
+} {
   const packageRoot = getPackageRoot();
   const targetPath = outPath || path.join(packageRoot, 'openclaw.json');
   const config = buildOpenClawConfig();
-  writeFileSync(targetPath, `${JSON.stringify(config, null, 2)}\n`, 'utf-8');
-  return targetPath;
+  const serialized = `${JSON.stringify(config, null, 2)}\n`;
+  writeFileSync(targetPath, serialized, 'utf-8');
+  return { targetPath, serialized };
 }
 
 const isMainModule =
@@ -737,9 +807,31 @@ const isMainModule =
     : process.argv[1]?.endsWith('generate-openclaw.ts');
 
 if (isMainModule) {
-  const output = writeOpenClawConfig();
+  const checkMode = process.argv.includes('--check');
   const config = buildOpenClawConfig();
-  console.log(
-    `[openclaw] generated ${config.skills.length} skills at ${output}`,
-  );
+
+  const packageRoot = getPackageRoot();
+  const targetPath = path.join(packageRoot, 'openclaw.json');
+  const expected = `${JSON.stringify(config, null, 2)}\n`;
+
+  if (checkMode) {
+    if (!existsSync(targetPath)) {
+      console.error(`[openclaw] missing file: ${targetPath}`);
+      process.exit(1);
+    }
+
+    const existing = readFileSync(targetPath, 'utf-8');
+    if (existing !== expected) {
+      console.error(
+        '[openclaw] openclaw.json is out of date. Run `bun run build:openclaw`.',
+      );
+      process.exit(1);
+    }
+
+    console.log('[openclaw] openclaw.json is up to date');
+    process.exit(0);
+  }
+
+  const output = writeOpenClawConfig(targetPath);
+  console.log(`[openclaw] generated ${config.tools.length} tools at ${output.targetPath}`);
 }

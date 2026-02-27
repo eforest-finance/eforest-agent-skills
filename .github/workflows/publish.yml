@@ -12,6 +12,8 @@ permissions:
 jobs:
   unit-test:
     runs-on: ubuntu-latest
+    env:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
@@ -20,14 +22,20 @@ jobs:
           bun-version: latest
 
       - run: bun install
-
-      - run: bun run test:unit:coverage
+      - run: bun run test:coverage:ci
+      - run: bun run build:openclaw:check
 
       - name: Upload coverage to Codecov
+        if: ${{ env.CODECOV_TOKEN != '' }}
         uses: codecov/codecov-action@v5
         with:
+          token: ${{ env.CODECOV_TOKEN }}
           files: ./coverage/lcov.info
           fail_ci_if_error: false
+
+      - name: Skip Codecov upload (missing token)
+        if: ${{ env.CODECOV_TOKEN == '' }}
+        run: echo "CODECOV_TOKEN is not set; skipping Codecov upload."
 
   publish:
     if: startsWith(github.ref, 'refs/tags/v')
