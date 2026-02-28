@@ -1,6 +1,6 @@
 {
   "name": "@eforest-finance/agent-skills",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "AI Agent Kit for aelf token lifecycle on eForest: buy-seed, create-token, issue-token. Supports CLI, MCP, and SDK.",
   "license": "MIT",
   "repository": {
