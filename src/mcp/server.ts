@@ -45,6 +45,22 @@ function fail(err: any) {
   };
 }
 
+const signerInputSchema = z
+  .object({
+    signerMode: z.enum(['auto', 'explicit', 'context', 'env', 'daemon']).optional(),
+    walletType: z.enum(['EOA', 'CA']).optional(),
+    address: z.string().optional(),
+    password: z.string().optional(),
+    privateKey: z.string().optional(),
+    caHash: z.string().optional(),
+    caAddress: z.string().optional(),
+    network: z.enum(['mainnet', 'testnet']).optional(),
+  })
+  .optional()
+  .describe(
+    'Optional signer context input. signerMode=auto tries explicit → active context → env.',
+  );
+
 // ============================================================================
 // MCP Server
 // ============================================================================
@@ -81,11 +97,12 @@ Price safety: requires --force or force param. Use force=2 for max 2 ELF.`,
       .optional()
       .default(false)
       .describe('If true, return execution plan without sending tx'),
+    signer: signerInputSchema,
   },
   async (params) => {
     try {
       validateBuySeedParams({ symbol: params.symbol, issuer: params.issuer });
-      const config = await getNetworkConfig();
+      const config = await getNetworkConfig({ signerContext: params.signer });
       const result = await buySeed(
         config,
         {
@@ -139,10 +156,11 @@ Cross-chain sync has graceful degradation: success=true even if sync times out.`
     isBurnable: z.boolean().optional().default(true),
     tokenImage: z.string().optional().default('').describe('Token logo URL'),
     dryRun: z.boolean().optional().default(false),
+    signer: signerInputSchema,
   },
   async (params) => {
     try {
-      const config = await getNetworkConfig();
+      const config = await getNetworkConfig({ signerContext: params.signer });
       const issuer = params.issuer || config.walletAddress;
 
       const opts = { ...params, issuer, tokenImage: params.tokenImage || '' };
@@ -178,11 +196,12 @@ Steps: GetTokenInfo → GetProxyAccount → encode IssueInput → ForwardCall.`,
       ),
     memo: z.string().optional().default(''),
     dryRun: z.boolean().optional().default(false),
+    signer: signerInputSchema,
   },
   async (params) => {
     try {
       validateIssueTokenParams(params);
-      const config = await getNetworkConfig();
+      const config = await getNetworkConfig({ signerContext: params.signer });
       const result = await issueToken(
         config,
         { ...params, memo: params.memo || '' },
@@ -215,6 +234,7 @@ const forestBaseToolSchema = {
 
   channels: z.array(z.string()).optional(),
   address: z.string().optional(),
+  signer: signerInputSchema,
 };
 
 function buildForestToolDescription(skill: {
@@ -243,7 +263,10 @@ for (const skill of listForestSkills()) {
     async (params) => {
       try {
         const env = params.env || process.env.EFOREST_NETWORK || 'mainnet';
-        const config = await getNetworkConfig({ env });
+        const config = await getNetworkConfig({
+          env,
+          signerContext: params.signer,
+        });
         const result = await dispatchForestSkill(
           skill.name,
           {

@@ -16,7 +16,8 @@ import { existsSync, readFileSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
-import { createSignerFromEnv } from '@portkey/aelf-signer';
+import type { SignerContextInput } from './wallet-context';
+import { resolveSignerContext } from './signer-context';
 import type { CmsConfigItems, ResolvedConfig } from './types';
 import { ENV_PRESETS } from './types';
 import { getWallet } from './aelf-client';
@@ -77,6 +78,7 @@ export async function getNetworkConfig(opts?: {
   privateKey?: string;
   apiUrl?: string;
   rpcUrl?: string;
+  signerContext?: SignerContextInput;
 }): Promise<ResolvedConfig> {
   const o = opts || {};
   const envName =
@@ -125,10 +127,20 @@ export async function getNetworkConfig(opts?: {
       '',
   };
 
-  // Unified signer: detects EOA/CA mode from env vars automatically
-  const signer = createSignerFromEnv();
+  const resolvedSigner = resolveSignerContext({
+    signerMode: 'auto',
+    ...o.signerContext,
+    privateKey: o.privateKey || o.signerContext?.privateKey,
+  });
+  const signer = resolvedSigner.signer;
   // Raw wallet for API auth (fetchAuthToken needs keyPair for signature)
-  const wallet = getWallet(o.privateKey);
+  const wallet = getWallet(
+    o.privateKey ||
+      resolvedSigner.privateKey ||
+      process.env.AELF_PRIVATE_KEY ||
+      process.env.EFOREST_PRIVATE_KEY ||
+      process.env.PORTKEY_PRIVATE_KEY,
+  );
   const walletAddress = signer.address;
 
   return {

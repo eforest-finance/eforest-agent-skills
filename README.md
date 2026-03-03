@@ -122,7 +122,7 @@ bun install
 
 ```bash
 cp .env.example .env
-# Edit .env and set wallet credentials
+# Edit .env and set network + signer fallback credentials
 ```
 
 ### CLI Usage (Legacy)
@@ -204,6 +204,19 @@ The MCP server auto-registers both legacy tools and all `aelf-forest-*` tools fr
   }
 }
 ```
+
+### Cross-Skill signer context (recommended)
+
+Write operations can resolve signer from shared wallet context first. Resolution order:
+
+1. explicit signer input (`privateKey` or CA tuple)
+2. active context (`~/.portkey/skill-wallet/context.v1.json`)
+3. env fallback (`AELF_PRIVATE_KEY` or `PORTKEY_*`)
+
+When context points to encrypted wallet/keystore, pass password in tool input or use:
+
+- `PORTKEY_WALLET_PASSWORD` for EOA wallet files
+- `PORTKEY_CA_KEYSTORE_PASSWORD` for CA keystore files
 
 ## Forest API Route Map (Config-first)
 
@@ -453,6 +466,9 @@ Notes:
 | `PORTKEY_PRIVATE_KEY` | Portkey Manager private key (CA mode) | — |
 | `PORTKEY_CA_HASH` | Portkey CA hash (CA mode) | — |
 | `PORTKEY_CA_ADDRESS` | Portkey CA address (CA mode) | — |
+| `PORTKEY_WALLET_PASSWORD` | Optional password cache for EOA wallet context decryption | — |
+| `PORTKEY_CA_KEYSTORE_PASSWORD` | Optional password cache for CA keystore context decryption | — |
+| `PORTKEY_SKILL_WALLET_CONTEXT_PATH` | Override active wallet context path | `~/.portkey/skill-wallet/context.v1.json` |
 | `EFOREST_NETWORK` / `AELF_ENV` | `mainnet` or `testnet` | `mainnet` |
 | `EFOREST_API_URL` / `AELF_API_URL` | Backend API URL | auto |
 | `EFOREST_RPC_URL` / `AELF_RPC_URL` | AELF MainChain RPC | auto |

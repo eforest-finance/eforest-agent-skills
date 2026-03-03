@@ -12,12 +12,14 @@ description: "eForest symbol and forest NFT operations for agent workflows."
 - Symbol-market operations: buy seed, create token, issue token
 - Forest operations: collection/item creation, listing, offer, trade
 - Config-first service gating and graceful degradation
+- Shared signer resolution for write operations: `explicit -> context -> env`
 - Supports SDK, CLI, MCP, and OpenClaw integration from one codebase.
 
 ## Safe usage rules
 - Never print private keys, mnemonics, or tokens in channel outputs.
 - For write operations, require explicit user confirmation and validate parameters before sending transactions.
 - Prefer `simulate` or read-only queries first when available.
+- Active wallet context must stay metadata-only; never persist plaintext private keys.
 
 ## Command recipes
 - Start MCP server: `bun run mcp`
@@ -25,8 +27,10 @@ description: "eForest symbol and forest NFT operations for agent workflows."
 - Generate OpenClaw config: `bun run build:openclaw`
 - Verify OpenClaw config: `bun run build:openclaw:check`
 - Run CI coverage gate: `bun run test:coverage:ci`
+- For shared signer flows, pass `signerContext` with `signerMode=auto` and optional password.
 
 ## Limits / Non-goals
 - This skill focuses on domain operations and adapters; it is not a full wallet custody system.
 - Do not hardcode environment secrets in source code or docs.
 - Avoid bypassing validation for external service calls.
+- `signerMode=daemon` is reserved for future provider rollout and returns `SIGNER_DAEMON_NOT_IMPLEMENTED`.

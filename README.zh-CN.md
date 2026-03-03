@@ -122,7 +122,7 @@ bun install
 
 ```bash
 cp .env.example .env
-# 编辑 .env，填入钱包凭据
+# 编辑 .env，填写网络配置与 signer 回退凭据
 ```
 
 ### CLI 使用（Legacy）
@@ -204,6 +204,19 @@ MCP Server 会自动注册 legacy tools + 全部 `aelf-forest-*` tools（来自 
   }
 }
 ```
+
+### 跨 Skill 签名上下文（推荐）
+
+写操作可优先从共享钱包上下文解析 signer。解析顺序：
+
+1. 显式输入（`privateKey` 或 CA 三元组）
+2. Active context（`~/.portkey/skill-wallet/context.v1.json`）
+3. 环境变量回退（`AELF_PRIVATE_KEY` 或 `PORTKEY_*`）
+
+如果 context 指向加密钱包/keystore，可通过工具入参传密码，或使用：
+
+- `PORTKEY_WALLET_PASSWORD`（EOA 钱包文件）
+- `PORTKEY_CA_KEYSTORE_PASSWORD`（CA keystore 文件）
 
 ## Forest API Route Map（配置优先）
 
@@ -453,6 +466,9 @@ bun test:e2e             # 等价于 test:e2e:full
 | `PORTKEY_PRIVATE_KEY` | Portkey Manager 私钥（CA） | — |
 | `PORTKEY_CA_HASH` | Portkey CA hash（CA） | — |
 | `PORTKEY_CA_ADDRESS` | Portkey CA 地址（CA） | — |
+| `PORTKEY_WALLET_PASSWORD` | EOA wallet context 解密密码缓存（可选） | — |
+| `PORTKEY_CA_KEYSTORE_PASSWORD` | CA keystore context 解密密码缓存（可选） | — |
+| `PORTKEY_SKILL_WALLET_CONTEXT_PATH` | 覆盖 active context 文件路径 | `~/.portkey/skill-wallet/context.v1.json` |
 | `EFOREST_NETWORK` / `AELF_ENV` | `mainnet` 或 `testnet` | `mainnet` |
 | `EFOREST_API_URL` / `AELF_API_URL` | 后端 API 地址 | 自动 |
 | `EFOREST_RPC_URL` / `AELF_RPC_URL` | AELF 主链 RPC | 自动 |
