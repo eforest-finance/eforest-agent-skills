@@ -8,6 +8,7 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
+import packageJson from '../../package.json';
 
 import { loadEnvFile, getNetworkConfig } from '../../lib/config';
 import { buySeed } from '../core/seed';
@@ -55,7 +56,7 @@ const signerInputSchema = z
 
 const server = new McpServer({
   name: 'eforest-token-agent-kit',
-  version: '0.4.0',
+  version: packageJson.version,
 });
 
 // --- aelf-buy-seed ---
