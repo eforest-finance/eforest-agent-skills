@@ -14,6 +14,7 @@
  */
 
 import { Command } from 'commander';
+import packageJson from './package.json';
 
 // Bootstrap: load .env before anything else
 import { loadEnvFile, getNetworkConfig } from './lib/config';
@@ -75,7 +76,7 @@ program
   .description(
     'eForest Token Agent Kit — CLI for aelf token lifecycle (buy-seed, create-token, issue-token)',
   )
-  .version('0.4.0');
+  .version(packageJson.version);
 
 function addGlobalOptions(cmd: Command): Command {
   return cmd

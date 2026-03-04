@@ -4,6 +4,7 @@
  */
 
 import { Command } from 'commander';
+import packageJson from '../../package.json';
 
 import { getNetworkConfig, loadEnvFile } from '../../lib/config';
 import {
@@ -265,7 +266,7 @@ const program = new Command();
 program
   .name('forest-skill')
   .description('Run a forest skill via unified dispatcher')
-  .version('0.4.0');
+  .version(packageJson.version);
 
 program
   .command('run')

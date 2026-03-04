@@ -14,6 +14,7 @@
 
 import { Command } from 'commander';
 import * as fs from 'fs';
+import packageJson from '../package.json';
 import {
   getPackageRoot,
   getMcpServerPath,
@@ -35,7 +36,7 @@ program
   .description(
     'Configure @eforest-finance/token-agent-kit for various AI platforms',
   )
-  .version('0.4.0');
+  .version(packageJson.version);
 
 // ---- Shared options helper ----
 const sharedOpts = (cmd: Command) =>
