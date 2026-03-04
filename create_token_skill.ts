@@ -30,6 +30,7 @@ import {
   validateCreateTokenParams,
   validateIssueTokenParams,
 } from './lib/types';
+import type { ResolvedConfig } from './lib/types';
 
 // ============================================================================
 // CLI Output Helpers
@@ -111,7 +112,7 @@ addGlobalOptions(
 ).action(async (opts) => {
   try {
     validateBuySeedParams(opts);
-    const config = await getNetworkConfig(opts);
+    const config = await getNetworkConfig({ ...opts, requireSigner: true } as any) as ResolvedConfig;
 
     let force: boolean | number | undefined = opts.force;
     if (force === true) {
@@ -158,7 +159,7 @@ addGlobalOptions(
     .option('--token-image <url>', 'Token logo image URL', ''),
 ).action(async (opts) => {
   try {
-    const config = await getNetworkConfig(opts);
+    const config = await getNetworkConfig({ ...opts, requireSigner: true } as any) as ResolvedConfig;
     if (!opts.issuer) {
       opts.issuer = config.walletAddress;
     }
@@ -194,7 +195,7 @@ addGlobalOptions(
 ).action(async (opts) => {
   try {
     validateIssueTokenParams(opts);
-    const config = await getNetworkConfig(opts);
+    const config = await getNetworkConfig({ ...opts, requireSigner: true } as any) as ResolvedConfig;
     const result = await issueToken(config, opts, opts.dryRun);
     printWarnings(result);
     console.log(formatOutput(result));

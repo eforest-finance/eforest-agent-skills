@@ -49,6 +49,7 @@ export interface BuySeedParams {
 }
 
 export interface BuySeedResult {
+  dryRun?: false;
   success: boolean;
   transactionId: string;
   /** Real on-chain SEED symbol, e.g. "SEED-321" */
@@ -64,6 +65,16 @@ export interface BuySeedResult {
 
 export interface BuySeedDryRunResult {
   dryRun: true;
+  success?: false;
+  transactionId?: string;
+  seedSymbol?: string | null;
+  data?: {
+    symbol: string;
+    issueTo: string;
+    priceELF: number | null;
+    priceSymbol: string;
+  };
+  warnings?: string[];
   priceELF: number | null;
   priceSymbol: string;
   available: boolean;
@@ -84,6 +95,7 @@ export interface CreateTokenParams {
 }
 
 export interface CreateTokenResult {
+  dryRun?: false;
   success: boolean;
   transactionId: string;
   /** On-chain issuer (proxy account) — pass to issue-token */
@@ -102,6 +114,12 @@ export interface CreateTokenResult {
 
 export interface CreateTokenDryRunResult {
   dryRun: true;
+  success?: false;
+  transactionId?: string;
+  proxyIssuer?: string;
+  crossChainSynced?: boolean;
+  warning?: string;
+  warnings?: string[];
   steps: DryRunStep[];
 }
 
@@ -117,6 +135,7 @@ export interface IssueTokenParams {
 }
 
 export interface IssueTokenResult {
+  dryRun?: false;
   success: boolean;
   transactionId: string;
   proxyIssuer: string;
@@ -127,6 +146,12 @@ export interface IssueTokenResult {
 
 export interface IssueTokenDryRunResult {
   dryRun: true;
+  success?: false;
+  transactionId?: string;
+  proxyIssuer?: string;
+  proxyAccountHash?: string;
+  data?: IssueInput;
+  warnings?: string[];
   steps: DryRunStep[];
 }
 
