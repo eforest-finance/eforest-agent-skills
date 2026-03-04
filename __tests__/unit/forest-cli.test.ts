@@ -44,6 +44,7 @@ describe('forest skill CLI helpers', () => {
 
   test('buildSkillInput merges inputJson and field with field priority', () => {
     const input = buildSkillInput({
+      skill: 'aelf-forest-transfer-item',
       env: 'testnet',
       dryRun: true,
       inputJson: JSON.stringify({ payload: { symbol: 'OLD', chain: 'AELF' } }),

@@ -25,6 +25,9 @@ jobs:
 
       - run: bun install
       - run: bun run deps:check
+      - name: Typecheck (observe)
+        continue-on-error: true
+        run: bun run typecheck
       - run: bun run test:unit
       - run: bun run test:integration
       - run: bun run test:e2e:smoke
@@ -42,6 +45,9 @@ jobs:
           bun-version: latest
 
       - run: bun install
+      - name: Typecheck (observe)
+        continue-on-error: true
+        run: bun run typecheck
       - run: bun run test:unit
       - run: bun run test:integration
       - run: bun run test:e2e:full

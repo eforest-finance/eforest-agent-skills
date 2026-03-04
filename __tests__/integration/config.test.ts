@@ -49,6 +49,17 @@ describe('getNetworkConfig', () => {
     );
   });
 
+  test('supports readonly config path without signer', async () => {
+    delete process.env.AELF_PRIVATE_KEY;
+    delete process.env.PORTKEY_PRIVATE_KEY;
+    delete process.env.PORTKEY_CA_HASH;
+    delete process.env.PORTKEY_CA_ADDRESS;
+
+    const config = await getNetworkConfig({ requireSigner: false });
+    expect(config.apiUrl).toBeDefined();
+    expect((config as any).walletAddress).toBeUndefined();
+  });
+
   test('uses mainnet preset by default', async () => {
     process.env.AELF_PRIVATE_KEY = TEST_PRIVATE_KEY;
     delete process.env.AELF_ENV;

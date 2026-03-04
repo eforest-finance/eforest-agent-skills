@@ -16,8 +16,9 @@ import { existsSync, readFileSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
-import { createSignerFromEnv } from '@portkey/aelf-signer';
-import type { CmsConfigItems, ResolvedConfig } from './types';
+import type { SignerContextInput } from './wallet-context';
+import { resolveSignerContext } from './signer-context';
+import type { CmsConfigItems, ResolvedConfig, ResolvedReadonlyConfig } from './types';
 import { ENV_PRESETS } from './types';
 import { getWallet } from './aelf-client';
 
@@ -72,12 +73,16 @@ export async function fetchCmsConfig(cmsUrl: string): Promise<CmsConfigItems> {
 // getNetworkConfig — single entry point
 // ============================================================================
 
-export async function getNetworkConfig(opts?: {
+type NetworkConfigOptions = {
   env?: string;
   privateKey?: string;
   apiUrl?: string;
   rpcUrl?: string;
-}): Promise<ResolvedConfig> {
+  signerContext?: SignerContextInput;
+  requireSigner?: boolean;
+};
+
+async function getReadonlyBaseConfig(opts?: NetworkConfigOptions): Promise<ResolvedReadonlyConfig> {
   const o = opts || {};
   const envName =
     o.env ||
@@ -125,20 +130,53 @@ export async function getNetworkConfig(opts?: {
       '',
   };
 
-  // Unified signer: detects EOA/CA mode from env vars automatically
-  const signer = createSignerFromEnv();
-  // Raw wallet for API auth (fetchAuthToken needs keyPair for signature)
-  const wallet = getWallet(o.privateKey);
-  const walletAddress = signer.address;
-
   return {
     apiUrl,
     cmsUrl,
     connectUrl,
     rpcUrls,
     contracts: cmsConfig,
+  };
+}
+
+export async function getReadonlyNetworkConfig(
+  opts?: Pick<NetworkConfigOptions, 'env' | 'apiUrl' | 'rpcUrl'>,
+): Promise<ResolvedReadonlyConfig> {
+  return getReadonlyBaseConfig(opts);
+}
+
+export async function getNetworkConfig(
+  opts: (NetworkConfigOptions & { requireSigner: false }),
+): Promise<ResolvedReadonlyConfig>;
+export async function getNetworkConfig(opts?: NetworkConfigOptions): Promise<ResolvedConfig>;
+export async function getNetworkConfig(
+  opts?: NetworkConfigOptions,
+): Promise<ResolvedConfig | ResolvedReadonlyConfig> {
+  const o = opts || {};
+  const base = await getReadonlyBaseConfig(o);
+
+  if (o.requireSigner === false) {
+    return base;
+  }
+
+  const resolvedSigner = resolveSignerContext({
+    signerMode: 'auto',
+    ...o.signerContext,
+    privateKey: o.privateKey || o.signerContext?.privateKey,
+  });
+  const signer = resolvedSigner.signer;
+  const wallet = getWallet(
+    o.privateKey ||
+      resolvedSigner.privateKey ||
+      process.env.AELF_PRIVATE_KEY ||
+      process.env.EFOREST_PRIVATE_KEY ||
+      process.env.PORTKEY_PRIVATE_KEY,
+  );
+
+  return {
+    ...base,
     signer,
     wallet,
-    walletAddress,
+    walletAddress: signer.address,
   };
 }

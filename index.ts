@@ -22,7 +22,7 @@ export {
 } from './src/core/forest';
 
 // Config
-export { loadEnvFile, getNetworkConfig, fetchCmsConfig } from './lib/config';
+export { loadEnvFile, getNetworkConfig, getReadonlyNetworkConfig, fetchCmsConfig } from './lib/config';
 
 // aelf client utilities
 export {
@@ -34,6 +34,16 @@ export {
   callContractView,
   sleep,
 } from './lib/aelf-client';
+export {
+  resolveSignerContext,
+  SignerContextError,
+} from './lib/signer-context';
+export {
+  readWalletContext,
+  writeWalletContext,
+  getActiveWalletProfile,
+  setActiveWalletProfile,
+} from './lib/wallet-context';
 
 // API client
 export {
@@ -125,3 +135,13 @@ export {
   validateIssueTokenParams,
   validateBuySeedParams,
 } from './lib/types';
+
+export type {
+  SignerMode,
+  SignerProvider,
+  SignerContextInput,
+  WalletType,
+  WalletSource,
+  ActiveWalletProfile,
+  WalletContextFile,
+} from './lib/wallet-context';

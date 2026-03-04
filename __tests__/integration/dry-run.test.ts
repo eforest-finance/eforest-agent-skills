@@ -35,10 +35,11 @@ function makeMockConfig(overrides?: Partial<any>): ResolvedConfig {
       proxyMainAddress: 'mock_proxy_main',
       proxySideAddress: 'mock_proxy_side',
     },
+    signer: { address: wallet.address } as any,
     wallet,
     walletAddress: wallet.address,
     ...overrides,
-  } as ResolvedConfig;
+  } as unknown as ResolvedConfig;
 }
 
 // ============================================================================

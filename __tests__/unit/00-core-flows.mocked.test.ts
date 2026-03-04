@@ -323,11 +323,11 @@ describe('core flows (mocked)', () => {
     if (result.success) {
       expect(result.crossChainSynced).toBe(false);
       expect(result.warning).toContain('cross-chain sync');
-      expect(result.warnings.some((item) => item.includes('Auth token fetch failed'))).toBe(
+      expect(result.warnings.some((item: string) => item.includes('Auth token fetch failed'))).toBe(
         true,
       );
       expect(
-        result.warnings.some((item) => item.includes('Cross-chain sync incomplete')),
+        result.warnings.some((item: string) => item.includes('Cross-chain sync incomplete')),
       ).toBe(true);
     }
   });
