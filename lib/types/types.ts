@@ -32,6 +32,14 @@ export interface ResolvedConfig {
   walletAddress: string;
 }
 
+export interface ResolvedReadonlyConfig {
+  apiUrl: string;
+  cmsUrl: string;
+  connectUrl: string;
+  rpcUrls: Record<string, string>;
+  contracts: CmsConfigItems;
+}
+
 /** buy-seed */
 export interface BuySeedParams {
   symbol: string;

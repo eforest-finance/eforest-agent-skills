@@ -197,6 +197,7 @@ export function resolveSignerContext(
 ): ResolvedSignerContext {
   const mode = input.signerMode || 'auto';
   const warnings: string[] = [];
+  let contextError: unknown = null;
 
   if (mode === 'daemon') {
     throw new SignerContextError(
@@ -219,6 +220,7 @@ export function resolveSignerContext(
       context.warnings = warnings;
       return context;
     } catch (error) {
+      contextError = error;
       if (mode === 'context') throw error;
     }
   }
@@ -248,6 +250,10 @@ export function resolveSignerContext(
     } catch (error) {
       if (mode === 'env') throw error;
     }
+  }
+
+  if (contextError) {
+    throw contextError;
   }
 
   throw new SignerContextError(

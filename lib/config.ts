@@ -18,7 +18,7 @@ import { fileURLToPath } from 'url';
 
 import type { SignerContextInput } from './wallet-context';
 import { resolveSignerContext } from './signer-context';
-import type { CmsConfigItems, ResolvedConfig } from './types';
+import type { CmsConfigItems, ResolvedConfig, ResolvedReadonlyConfig } from './types';
 import { ENV_PRESETS } from './types';
 import { getWallet } from './aelf-client';
 
@@ -73,13 +73,15 @@ export async function fetchCmsConfig(cmsUrl: string): Promise<CmsConfigItems> {
 // getNetworkConfig — single entry point
 // ============================================================================
 
-export async function getNetworkConfig(opts?: {
+type NetworkConfigOptions = {
   env?: string;
   privateKey?: string;
   apiUrl?: string;
   rpcUrl?: string;
   signerContext?: SignerContextInput;
-}): Promise<ResolvedConfig> {
+};
+
+async function getReadonlyBaseConfig(opts?: NetworkConfigOptions): Promise<ResolvedReadonlyConfig> {
   const o = opts || {};
   const envName =
     o.env ||
@@ -127,13 +129,31 @@ export async function getNetworkConfig(opts?: {
       '',
   };
 
+  return {
+    apiUrl,
+    cmsUrl,
+    connectUrl,
+    rpcUrls,
+    contracts: cmsConfig,
+  };
+}
+
+export async function getReadonlyNetworkConfig(
+  opts?: Pick<NetworkConfigOptions, 'env' | 'apiUrl' | 'rpcUrl'>,
+): Promise<ResolvedReadonlyConfig> {
+  return getReadonlyBaseConfig(opts);
+}
+
+export async function getNetworkConfig(opts?: NetworkConfigOptions): Promise<ResolvedConfig> {
+  const o = opts || {};
+  const base = await getReadonlyBaseConfig(o);
+
   const resolvedSigner = resolveSignerContext({
     signerMode: 'auto',
     ...o.signerContext,
     privateKey: o.privateKey || o.signerContext?.privateKey,
   });
   const signer = resolvedSigner.signer;
-  // Raw wallet for API auth (fetchAuthToken needs keyPair for signature)
   const wallet = getWallet(
     o.privateKey ||
       resolvedSigner.privateKey ||
@@ -141,16 +161,11 @@ export async function getNetworkConfig(opts?: {
       process.env.EFOREST_PRIVATE_KEY ||
       process.env.PORTKEY_PRIVATE_KEY,
   );
-  const walletAddress = signer.address;
 
   return {
-    apiUrl,
-    cmsUrl,
-    connectUrl,
-    rpcUrls,
-    contracts: cmsConfig,
+    ...base,
     signer,
     wallet,
-    walletAddress,
+    walletAddress: signer.address,
   };
 }

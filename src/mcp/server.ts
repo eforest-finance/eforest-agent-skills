@@ -32,15 +32,48 @@ function ok(data: any) {
   return { content: [{ type: 'text' as const, text: JSON.stringify(data) }] };
 }
 
-function fail(err: any) {
-  const msg =
-    typeof err === 'string'
-      ? err
-      : err?.message ||
-        (typeof err === 'object' ? JSON.stringify(err) : String(err)) ||
-        'Unknown error';
+function toMcpError(err: unknown): {
+  code: string;
+  message: string;
+  details?: unknown;
+  traceId?: string;
+} {
+  const fallback = {
+    code: 'UNKNOWN_ERROR',
+    message: String(err),
+    details: undefined,
+    traceId: undefined,
+  };
+  if (!err || typeof err !== 'object') return fallback;
+  const record = err as Record<string, unknown>;
+  const rawMessage =
+    typeof record.message === 'string'
+      ? record.message
+      : (typeof err === 'string'
+        ? err
+        : fallback.message);
+  let code = typeof record.code === 'string' ? record.code : '';
+  let message = rawMessage;
+  const prefixed = rawMessage.match(/^([A-Z0-9_]+):\s*(.*)$/);
+  if (!code && prefixed) {
+    code = prefixed[1];
+    message = prefixed[2] || prefixed[1];
+  }
   return {
-    content: [{ type: 'text' as const, text: `[ERROR] ${msg}` }],
+    code: code || 'UNKNOWN_ERROR',
+    message,
+    details: record.details,
+    traceId: typeof record.traceId === 'string' ? record.traceId : undefined,
+  };
+}
+
+function fail(err: unknown) {
+  const parsed = toMcpError(err);
+  return {
+    content: [
+      { type: 'text' as const, text: `[ERROR] ${parsed.code}: ${parsed.message}` },
+      { type: 'text' as const, text: JSON.stringify({ error: parsed }, null, 2) },
+    ],
     isError: true,
   };
 }

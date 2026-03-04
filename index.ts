@@ -22,7 +22,7 @@ export {
 } from './src/core/forest';
 
 // Config
-export { loadEnvFile, getNetworkConfig, fetchCmsConfig } from './lib/config';
+export { loadEnvFile, getNetworkConfig, getReadonlyNetworkConfig, fetchCmsConfig } from './lib/config';
 
 // aelf client utilities
 export {
