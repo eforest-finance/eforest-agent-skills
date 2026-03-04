@@ -79,6 +79,7 @@ type NetworkConfigOptions = {
   apiUrl?: string;
   rpcUrl?: string;
   signerContext?: SignerContextInput;
+  requireSigner?: boolean;
 };
 
 async function getReadonlyBaseConfig(opts?: NetworkConfigOptions): Promise<ResolvedReadonlyConfig> {
@@ -144,9 +145,19 @@ export async function getReadonlyNetworkConfig(
   return getReadonlyBaseConfig(opts);
 }
 
-export async function getNetworkConfig(opts?: NetworkConfigOptions): Promise<ResolvedConfig> {
+export async function getNetworkConfig(
+  opts: (NetworkConfigOptions & { requireSigner: false }),
+): Promise<ResolvedReadonlyConfig>;
+export async function getNetworkConfig(opts?: NetworkConfigOptions): Promise<ResolvedConfig>;
+export async function getNetworkConfig(
+  opts?: NetworkConfigOptions,
+): Promise<ResolvedConfig | ResolvedReadonlyConfig> {
   const o = opts || {};
   const base = await getReadonlyBaseConfig(o);
+
+  if (o.requireSigner === false) {
+    return base;
+  }
 
   const resolvedSigner = resolveSignerContext({
     signerMode: 'auto',
